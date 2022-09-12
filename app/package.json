@@ -2,7 +2,6 @@
   "name": "webapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://csmip.herokuapp.com/",
   "dependencies": {
     "@material-ui/core": "^4.0.0",
     "@material-ui/icons": "^4.11.2",
@@ -67,5 +66,4 @@
     ]
   },
   "proxy": "http://127.0.0.1:5000",
-  "proxy": "https://csmip.herokuapp.com/"
 }
