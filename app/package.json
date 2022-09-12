@@ -1,0 +1,71 @@
+{
+  "name": "webapp",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://csmip.herokuapp.com/",
+  "dependencies": {
+    "@material-ui/core": "^4.0.0",
+    "@material-ui/icons": "^4.11.2",
+    "@nivo/bar": "^0.73.1",
+    "@nivo/core": "^0.73.0",
+    "@nivo/line": "^0.73.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "bootstrap": "^4.6.0",
+    "child_process": "^1.0.2",
+    "concurrently": "^7.3.0",
+    "fs": "^0.0.1-security",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.5.25",
+    "material-table": "^1.63.0",
+    "python-shell": "^3.0.1",
+    "react": ">=16.8.4",
+    "react-bootstrap": "^1.6.5",
+    "react-bootstrap-validation": "^0.1.11",
+    "react-dom": ">=16.8.0",
+    "react-py": "^1.0.8",
+    "react-scripts": "^5.0.1",
+    "serve": "^14.0.1",
+    "stream": "^0.0.2",
+    "util": "^0.12.4",
+    "web-vitals": "^1.0.1",
+    "yarn": "^1.22.10"
+  },
+  "engines": {
+    "npm": "^8.19.0",
+    "node": "^16.17.0"
+  },
+  "scripts": {
+    "start": "set \"GENERATE_SOURCEMAP=false\" && react-scripts start ",
+    "start-api": "cd api && ./venv/Scripts/activate && flask run --no-debugger",
+    "start-pj": "concurrently \"npm run start-js\" \"npm run start-api\"",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browser": {
+    "child_process": false
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://127.0.0.1:5000",
+  "proxy": "https://csmip.herokuapp.com/"
+}
