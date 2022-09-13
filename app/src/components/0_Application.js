@@ -35,10 +35,11 @@ class Application extends Component {
                           {Name: 'Layer 2',Thickness: 20, Vs: 250, Gamma: 20, Damping: 0.5, Soil_Model: 3},
                           {Name: 'Layer 3',Thickness: 20, Vs: 100, Gamma: 18, Damping: 0.5, Soil_Model: 3},
                           {Name: 'Layer 4',Thickness: 20, Vs: 100, Gamma: 20, Damping: 0.5, Soil_Model: 3},
-                          {Name: 'Bedrock',Thickness: 1, Vs: 760, Gamma: 22, Damping: 1, Soil_Model: 3},], // Reference_Site_Soil_Profile
+                          {Name: 'Bedrock',Thickness: 20, Vs: 760, Gamma: 22, Damping: 1, Soil_Model: 3},], // Reference_Site_Soil_Profile
 
+            Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]}], // Reference Vs Profile
             Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 10, Vs: 20, Gamma: 20, Damping: 20, Soil_Model: 3},
-                         {Name: 'Bedrock',Thickness: 5, Vs: 20, Gamma: 20, Damping: 20, Soil_Model: 3},] // Target_Site_Soil_Profile
+                         {Name: 'Bedrock',Thickness: 90, Vs: 700, Gamma: 20, Damping: 20, Soil_Model: 3},], // Target_Site_Soil_Profile
         }
 
         // Bind the submission to handleChange() 
@@ -121,6 +122,8 @@ class Application extends Component {
         // run the validation here 
         this.setState({[inputName]:inputValue});
 
+        // if(inputName==)
+
         // console.log(inputName)
         // console.log(inputValue)
 
@@ -130,17 +133,19 @@ class Application extends Component {
 
     // function to handle upload of FAS file
     handleFile = (event) => {
+        console.log("Handeling_File")
+
         const inputName  = event.target.name;
         const inputValue = event.target.value;
 
-        console.log(inputName)
-        console.log(inputValue)
+        // console.log(inputName)
+        // console.log(inputValue)
 
-        // run the validation here 
-        console.log(event.target.files)
+        // // run the validation here 
+        // console.log(event.target.files)
 
         var file = event.target.files[0]; 
-        const { photoList } = this.state;
+        // console.log(file.name)
 
         if (file) {
             let reader = new FileReader();
@@ -186,22 +191,90 @@ class Application extends Component {
         } else { 
             alert("Failed to load file");
         }
+
+        console.log(file)
+        
         this.setState({[inputName]:file});
     }
 
     // function to update soil layered profile 1
     update_Reference_Site_Soil_Profile = (newData) => {
         this.setState({Reference_Site_Soil_Profile:newData});
+
+
+        // update the shear wave velocity profile
+        const Site_Vs_Profile_Data = this.state.Site_Vs_Profile
+
+        const Reference_Site_Profile = this.state.Reference_Site_Soil_Profile;
+        let Reference_Site_Num_Layers = Reference_Site_Profile.length;
+        var Reference_Site_Vs_Data    = [];
+        var Vs_Data = {};
+        var depth = 0;
+
+        console.log(JSON.stringify(Reference_Site_Num_Layers));
+
+        for (let i = 0; i < Reference_Site_Num_Layers; i++) {
+
+            Vs_Data.y = depth;
+            Vs_Data.x = Reference_Site_Profile[i].Vs;
+            Reference_Site_Vs_Data.push({...Vs_Data});
+
+            depth = depth + Reference_Site_Profile[i].Thickness
+
+            Vs_Data.y = depth;
+            Vs_Data.x = Reference_Site_Profile[i].Vs;
+            Reference_Site_Vs_Data.push({...Vs_Data});
+        }
+
+        Site_Vs_Profile_Data[0].data = Reference_Site_Vs_Data;
+
+        this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
+
+        // console.log(JSON.stringify(Site_Vs_Profile_Data));
+
+
     }
 
     // function to update soil layered profile 2
     update_Target_Site_Soil_Profile = (newData) => {
         this.setState({Target_Site_Soil_Profile:newData});
+
+
+        // update the shear wave velocity profile
+        const Site_Vs_Profile_Data = this.state.Site_Vs_Profile
+
+        const Target_Site_Profile = this.state.Target_Site_Soil_Profile;
+        let Target_Site_Num_Layers = Target_Site_Profile.length;
+        var Target_Site_Vs_Data    = [];
+        var Vs_Data = {};
+        var depth = 0;
+
+        // console.log(JSON.stringify(Target_Site_Num_Layers));
+
+        for (let i = 0; i < Target_Site_Num_Layers; i++) {
+
+            Vs_Data.y = depth;
+            Vs_Data.x = Target_Site_Profile[i].Vs;
+            Target_Site_Vs_Data.push({...Vs_Data});
+
+            depth = depth + Target_Site_Profile[i].Thickness
+
+            Vs_Data.y = depth;
+            Vs_Data.x = Target_Site_Profile[i].Vs;
+            Target_Site_Vs_Data.push({...Vs_Data});
+        }
+
+        Site_Vs_Profile_Data[1].data = Target_Site_Vs_Data;
+
+        this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
+
+        // console.log(JSON.stringify(Target_Site_Vs_Data));
+
     }
 
     render(){
-        const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile} = this.state;
-        const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile};
+        const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile} = this.state;
+        const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile};
                
         switch(step) {
         case 1:
@@ -215,13 +288,13 @@ class Application extends Component {
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     handleChange = {this.update_Target_Site_Soil_Profile}
-                    handleFile = {this.handleFile}
                     inputValues={inputValues}
                     />
         case 3:
             return <Tab_3
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
+                    handleFile = {this.handleFile}
                     handleChange = {this.handleChange}
                     inputValues={inputValues}
                     />

@@ -19,19 +19,7 @@ class Ground_Motion extends Component{
 
     render() {
         const whether_analyzed = this.props.inputValues.whether_analyzed;
-        // const data = [
-        //   { quarter: 1, earnings: 13000 },
-        //   { quarter: 2, earnings: 16500 },
-        //   { quarter: 3, earnings: 14250 },
-        //   { quarter: 4, earnings: 19000 }
-        // ];
-
-        // const data = [{"id": "FAS",
-        //                 "data": [{"x" :1, "y":2},{"x" :2, "y":5}]
-        //               },
-        //              ]
-
-        const data =  this.props.inputValues.FAS
+        const data             = this.props.inputValues.FAS
 
         console.log(data)
         return( 
@@ -64,10 +52,9 @@ class Ground_Motion extends Component{
                 <Form.Group as={Row} controlId="Date" >
                  <Col sm={{ span: -1, offset: 0 }}><Form.Label> &nbsp;&nbsp; </Form.Label></Col>
                  <Col sm={{ span: 0, offset: 0 }}><Form.Control type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile} /></Col>
-                </Form.Group>
+              </Form.Group>
 
               <div style={{ height: "400px" }}>
-               {/* <ResponsiveBar data={data} keys={["earnings"]} indexBy="quarter" /> */}
 
                 <ResponsiveLine
                   data={data}

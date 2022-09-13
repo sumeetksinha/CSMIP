@@ -27,8 +27,6 @@ class Target_Site extends Component{
                                            { title: "Soil Model", field: "Soil_Model", lookup: { 1: 'EPRI (93), PI=10', 2: 'Seed & Idriss, Sand Mean', 3: 'None' }, align:"center", validate: rowData => rowData.Soil_Model >0}
                                        ];
 
-       const data =  this.props.inputValues.FAS
-
         return( 
 
             <Tabs id="CSMIP_Tabs" activeKey="Target_Site" transition={false}>
@@ -54,9 +52,13 @@ class Target_Site extends Component{
                                         const Layer_1 = data.slice(0,1);
                                         const Bedrock = data.slice(-1);
                                         const OtherLayers = data.slice(1,-1);
+                                        newData.Thickness=parseFloat(newData.Thickness);
+                                        newData.Vs=parseFloat(newData.Vs);
+                                        newData.Gamma=parseFloat(newData.Gamma);
+                                        newData.Damping=parseFloat(newData.Damping);
                                         // console.log(Layer_1)
                                         // console.log(Bedrock)
-                                        // console.log(OtherLayers)
+                                        // console.log("I am here")
                                         newData.Name = "Layer " + (data.length)
                                         this.props.handleChange([...Layer_1, ...OtherLayers, newData, ...Bedrock])
                                         resolve();
@@ -69,6 +71,10 @@ class Target_Site extends Component{
                                         const data = this.props.inputValues.Target_Site_Soil_Profile;
                                         const dataUpdate = [...data];
                                         const index = oldData.tableData.id;
+                                        newData.Thickness=parseFloat(newData.Thickness)
+                                        newData.Vs=parseFloat(newData.Vs)
+                                        newData.Gamma=parseFloat(newData.Gamma)
+                                        newData.Damping=parseFloat(newData.Damping)
                                         dataUpdate[index] = newData;
                                         this.props.handleChange([...dataUpdate]);
                                         resolve();
@@ -95,23 +101,53 @@ class Target_Site extends Component{
                                 rowStyle: {
                                     backgroundColor: '#EEE',
                                     height: 5,
-                                    }
+                                    },
+                                fixedColumns: {
+                                        left: 0, 
+                                        right: 0
+                                      }
                             }}
+                            
                         />
                         </Col>
                         <Col xs={4}>
                             <ResponsiveLine
-                              data={data}
+                              data={this.props.inputValues.Site_Vs_Profile}
                               margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
-                              xScale={{ type: 'log', base: 10, max: 'auto' }}
-                              // yScale={{ type: 'log', base: 10, max: 'auto' }}
-                              axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: 'Vs (m/s)', legendOffset: 36, legendPosition: 'middle', tickRotation: 0,  tickValues: [0.01, 0.1, 1.0, 10]}}
-                              axisTop={{ orient: 'top', tickSize: 5, tickValues: [0.01, 0.1, 1.0, 10], legend: 'Vs (m/s)' , legendOffset: -36, legendPosition: 'middle', tickRotation: 0,  tickValues: [0.01, 0.1, 1.0, 10]}}
-                              axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -60, legendPosition: 'middle',}}
-                              // axisRight={{ orient: 'right', tickSize: 5,  tickRotation: 0}}
+                              xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                              yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                              axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                              axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                               colors={{ scheme: 'category10' }}
                               enablePoints={false}
                               useMesh={true}
+
+                              legends={[
+                                        {
+                                        anchor: 'bottom-left',
+                                        direction: 'row',
+                                        justify: false,
+                                        translateX: 10,
+                                        translateY: -10,
+                                        itemsSpacing: 0,
+                                        itemDirection: 'left-to-right',
+                                        itemWidth: 80,
+                                        itemHeight: 20,
+                                        itemOpacity: 0.75,
+                                        symbolSize: 12,
+                                        symbolShape: 'circle',
+                                        symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                        effects: [
+                                            {
+                                                on: 'hover',
+                                                style: {
+                                                    itemBackground: 'rgba(0, 0, 0, .03)',
+                                                    itemOpacity: 1
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]}
                            />
                         </Col>
                     </Row>
