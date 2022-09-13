@@ -1,7 +1,7 @@
 [CSMIP](https://csmip.herokuapp.com//)
 =========
 
-[<img src="./App/App.png">](https://csmip.herokuapp.com/)
+[<img src="./app/App.png">](https://csmip.herokuapp.com/)
 
 ### Description
 
