@@ -38,8 +38,9 @@ class Application extends Component {
                           {Name: 'Bedrock',Thickness: 20, Vs: 760, Gamma: 22, Damping: 1, Soil_Model: 3},], // Reference_Site_Soil_Profile
 
             Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]}], // Reference Vs Profile
-            Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 10, Vs: 20, Gamma: 20, Damping: 20, Soil_Model: 3},
-                         {Name: 'Bedrock',Thickness: 90, Vs: 700, Gamma: 20, Damping: 20, Soil_Model: 3},], // Target_Site_Soil_Profile
+            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.5, "y":0},{"x":0.5, "y":10},{"x":0.5, "y":10},{"x":0.5, "y":30},{"x":0.5, "y":30},{"x":0.5, "y":50},{"x":0.5, "y":50},{"x":0.5, "y":70},{"x":0.8, "y":70},{"x":0.8, "y":90}]},{"id": "Target","data": [{"x":.2, "y":0},{"x":.2, "y":10},{"x":.2, "y":10},{"x":.2, "y":90}]}], // Reference Vs Profile
+            Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 10, Vs: 20, Gamma: 20, Damping: 0.1, Soil_Model: 3},
+                         {Name: 'Bedrock',Thickness: 80, Vs: 700, Gamma: 20, Damping: 0.1, Soil_Model: 3},], // Target_Site_Soil_Profile
         }
 
         // Bind the submission to handleChange() 
@@ -197,84 +198,138 @@ class Application extends Component {
         this.setState({[inputName]:file});
     }
 
-    // function to update soil layered profile 1
+    //////////////////////////////////////////////////////////////////
+    // Update the properties of Reference Site Profile
+    //////////////////////////////////////////////////////////////////
     update_Reference_Site_Soil_Profile = (newData) => {
+
+        // // to update new data to fix bedrock
+        // var Fix_BedRock = newData;
+        // Fix_BedRock.slice(-1)[0].Thickness=0;
+        // this.setState({Reference_Site_Soil_Profile:Fix_BedRock});
+
+        // update the state to new Reference Site Profile 
         this.setState({Reference_Site_Soil_Profile:newData});
 
-
-        // update the shear wave velocity profile
-        const Site_Vs_Profile_Data = this.state.Site_Vs_Profile
-
+        // get the shear wave velocity, damping and refernce site soil profile from the current state
+        const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile
+        const Site_Damping_Profile_Data = this.state.Site_Damping_Profile
         const Reference_Site_Profile = this.state.Reference_Site_Soil_Profile;
+
+        // calculate the number of layers
         let Reference_Site_Num_Layers = Reference_Site_Profile.length;
+
+        // declare variables for Vs and Damping arrays
         var Reference_Site_Vs_Data    = [];
+        var Reference_Site_Damping_Data  = [];
+
+        // declare variable for Vs and Damping data points
         var Vs_Data = {};
+        var Damping_Data = {};
+
+        // start with an initial depth =0
         var depth = 0;
 
-        console.log(JSON.stringify(Reference_Site_Num_Layers));
+        // To print message in console
+        // console.log(JSON.stringify(Reference_Site_Num_Layers));
 
+        // Loop over the layers
         for (let i = 0; i < Reference_Site_Num_Layers; i++) {
 
             Vs_Data.y = depth;
             Vs_Data.x = Reference_Site_Profile[i].Vs;
             Reference_Site_Vs_Data.push({...Vs_Data});
 
+            Damping_Data.y = depth;
+            Damping_Data.x = Reference_Site_Profile[i].Damping;
+            Reference_Site_Damping_Data.push({...Damping_Data});
+
             depth = depth + Reference_Site_Profile[i].Thickness
 
             Vs_Data.y = depth;
             Vs_Data.x = Reference_Site_Profile[i].Vs;
             Reference_Site_Vs_Data.push({...Vs_Data});
+
+            Damping_Data.y = depth;
+            Damping_Data.x = Reference_Site_Profile[i].Damping;
+            Reference_Site_Damping_Data.push({...Damping_Data});
         }
 
+        // update Vs and Damping profile arrays
         Site_Vs_Profile_Data[0].data = Reference_Site_Vs_Data;
+        Site_Damping_Profile_Data[0].data = Reference_Site_Damping_Data;
 
+        // update the state 
         this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
-
-        // console.log(JSON.stringify(Site_Vs_Profile_Data));
-
-
+        this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
     }
 
-    // function to update soil layered profile 2
+    //////////////////////////////////////////////////////////////////
+    // Update the properties of Target Site Profile
+    //////////////////////////////////////////////////////////////////
     update_Target_Site_Soil_Profile = (newData) => {
+
+        console.log("I ama hgere ")
+
+        // update the state to new Target Site Profile 
         this.setState({Target_Site_Soil_Profile:newData});
 
-
-        // update the shear wave velocity profile
-        const Site_Vs_Profile_Data = this.state.Site_Vs_Profile
-
+        // get the shear wave velocity, damping and refernce site soil profile from the current state
+        const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile
+        const Site_Damping_Profile_Data = this.state.Site_Damping_Profile
         const Target_Site_Profile = this.state.Target_Site_Soil_Profile;
+
+        // calculate the number of layers
         let Target_Site_Num_Layers = Target_Site_Profile.length;
+
+        // declare variables for Vs and Damping arrays
         var Target_Site_Vs_Data    = [];
+        var Target_Site_Damping_Data  = [];
+
+        // declare variable for Vs and Damping data points
         var Vs_Data = {};
+        var Damping_Data = {};
+
+        // start with an initial depth =0
         var depth = 0;
 
+        // To print message in console
         // console.log(JSON.stringify(Target_Site_Num_Layers));
 
+        // Loop over the layers
         for (let i = 0; i < Target_Site_Num_Layers; i++) {
 
             Vs_Data.y = depth;
             Vs_Data.x = Target_Site_Profile[i].Vs;
             Target_Site_Vs_Data.push({...Vs_Data});
 
+            Damping_Data.y = depth;
+            Damping_Data.x = Target_Site_Profile[i].Damping;
+            Target_Site_Damping_Data.push({...Damping_Data});
+
             depth = depth + Target_Site_Profile[i].Thickness
 
             Vs_Data.y = depth;
             Vs_Data.x = Target_Site_Profile[i].Vs;
             Target_Site_Vs_Data.push({...Vs_Data});
+
+            Damping_Data.y = depth;
+            Damping_Data.x = Target_Site_Profile[i].Damping;
+            Target_Site_Damping_Data.push({...Damping_Data});
         }
 
+        // update Vs and Damping profile arrays
         Site_Vs_Profile_Data[1].data = Target_Site_Vs_Data;
+        Site_Damping_Profile_Data[1].data = Target_Site_Damping_Data;
 
+        // update the state 
         this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
-
-        // console.log(JSON.stringify(Target_Site_Vs_Data));
-
+        this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
     }
 
     render(){
-        const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile} = this.state;
-        const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile};
+        const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile} = this.state;
+        const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Depth_of_Interest, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile};
                
         switch(step) {
         case 1:

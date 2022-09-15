@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import {Form, Button, Card, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
-import { AddBox, ArrowDownward } from "@material-ui/icons";
+import {AddBox, ArrowDownward, ArrowUpward, CloudUpload, CloudDownload } from "@material-ui/icons";
 import MaterialTable from "material-table";
-import { ResponsiveLine } from '@nivo/line'
+import { ResponsiveLine } from '@nivo/line';
+
+
 
 class Reference_Site extends Component{
 
@@ -95,9 +97,31 @@ class Reference_Site extends Component{
 
                             }}
 
+                            actions={[
+                                {icon:()=>  <div>
+                                              <label for="file-input"><CloudUpload/></label>
+                                              <input id="file-input" accept=".txt" hidden type="file" />
+                                            </div>,
+
+                                    tooltip:"Import",
+                                    onclick:()=>alert("clicked"),
+                                    isFreeAction:true,
+                                },
+                                {icon:()=>  <div>
+                                              <label for="file-input"><CloudDownload/></label>
+                                              <input id="file-input" accept=".txt" hidden type="file" />
+                                            </div>,
+
+                                    tooltip:"Import",
+                                    onclick:()=>alert("clicked"),
+                                    isFreeAction:true,
+                                },
+                                ]}
+
                             options={{
                                 sorting: false,
-                                selection: true,
+                                selection: false,
+                                search: false,
                                 rowStyle: {
                                     backgroundColor: '#EEE',
                                     height: 5,
@@ -105,54 +129,101 @@ class Reference_Site extends Component{
                                 fixedColumns: {
                                         left: 0, 
                                         right: 0
-                                      }
+                                      },
+                                exportButton: false
                             }}
                         />
                         </Col>
                         <Col xs={4}>
-                            <ResponsiveLine
-                              data={this.props.inputValues.Site_Vs_Profile}
-                              margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
-                              xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
-                              yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                              axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
-                              axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
-                              colors={{ scheme: 'category10' }}
-                              enablePoints={false}
-                              useMesh={true}
+                            <Tabs id="Profiles" defaultActiveKey="Vs_Profile" transition={false} >
+                                <Tab eventKey="Vs_Profile" title="Shear Wave Velocity">
+                                    <div style={{ height: 450 }}>
+                                        <ResponsiveLine
+                                          data={this.props.inputValues.Site_Vs_Profile}
+                                          margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
+                                          xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                          yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                                          axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                          colors={{ scheme: 'category10' }}
+                                          enablePoints={false}
+                                          useMesh={true}
 
-                              legends={[
-                                        {
-                                        anchor: 'bottom-left',
-                                        direction: 'row',
-                                        justify: false,
-                                        translateX: 10,
-                                        translateY: -10,
-                                        itemsSpacing: 0,
-                                        itemDirection: 'left-to-right',
-                                        itemWidth: 80,
-                                        itemHeight: 20,
-                                        itemOpacity: 0.75,
-                                        symbolSize: 12,
-                                        symbolShape: 'circle',
-                                        symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                                        effects: [
-                                            {
-                                                on: 'hover',
-                                                style: {
-                                                    itemBackground: 'rgba(0, 0, 0, .03)',
-                                                    itemOpacity: 1
+                                          legends={[
+                                                    {
+                                                    anchor: 'bottom-left',
+                                                    direction: 'row',
+                                                    justify: false,
+                                                    translateX: 10,
+                                                    translateY: -10,
+                                                    itemsSpacing: 0,
+                                                    itemDirection: 'left-to-right',
+                                                    itemWidth: 80,
+                                                    itemHeight: 20,
+                                                    itemOpacity: 0.75,
+                                                    symbolSize: 12,
+                                                    symbolShape: 'circle',
+                                                    symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                                    effects: [
+                                                        {
+                                                            on: 'hover',
+                                                            style: {
+                                                                itemBackground: 'rgba(0, 0, 0, .03)',
+                                                                itemOpacity: 1
+                                                            }
+                                                        }
+                                                    ]
                                                 }
-                                            }
-                                        ]
-                                    }
-                                ]}
-                           />
+                                            ]}
+                                       />
+                                   </div>
+                                </Tab>
+
+                                <Tab eventKey="Damping_Profile" title="Damping">
+                                    <div style={{ height: 450 }}>
+                                        <ResponsiveLine
+                                          data={this.props.inputValues.Site_Damping_Profile}
+                                          margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
+                                          xScale={{ type: 'linear', min:0,  max: 1.0 }}
+                                          yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                                          axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                          colors={{ scheme: 'category10' }}
+                                          enablePoints={false}
+                                          useMesh={true}
+
+                                          legends={[
+                                                    {
+                                                    anchor: 'bottom-left',
+                                                    direction: 'row',
+                                                    justify: false,
+                                                    translateX: 10,
+                                                    translateY: -10,
+                                                    itemsSpacing: 0,
+                                                    itemDirection: 'left-to-right',
+                                                    itemWidth: 80,
+                                                    itemHeight: 20,
+                                                    itemOpacity: 0.75,
+                                                    symbolSize: 12,
+                                                    symbolShape: 'circle',
+                                                    symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                                    effects: [
+                                                        {
+                                                            on: 'hover',
+                                                            style: {
+                                                                itemBackground: 'rgba(0, 0, 0, .03)',
+                                                                itemOpacity: 1
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            ]}
+                                       />
+                                   </div>
+                                </Tab>
+                            </Tabs>
                         </Col>
                     </Row>
-
-                    
-
                     <p></p>
                     <Button variant="primary" type="Submit">Next</Button>
                 </Form>

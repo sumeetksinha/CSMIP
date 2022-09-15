@@ -34,7 +34,7 @@ class Ground_Motion extends Component{
               <h5> &nbsp;&nbsp;Enter Earthquake Source Information </h5>        
               <Form.Group as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
                 <Col sm={{ span: 2, offset: 0}}><Form.Label> &nbsp;&nbsp; Magnitude (Mw) </Form.Label></Col>
-                <Col sm={{ span: 2, offset: 0}}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
+                <Col sm={{ span: 2, offset: 0}}><Form.Control type="text" name = "Magnitude" size="10" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
 
                 <Col sm={{ span: 2, offset: 0}}><Form.Label> &nbsp;&nbsp; Distance (km) </Form.Label></Col>
                 <Col sm={{ span: 2, offset: 0}}><Form.Control type="text" name = "Distance" defaultValue={this.props.inputValues.Distance} required onChange={this.props.handleChange}/></Col>
