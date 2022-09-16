@@ -28,52 +28,145 @@ class Ground_Motion extends Component{
             <Tab eventKey="Target_Site" title="Target Site" disabled/>
             <Tab eventKey="Ground_Motion" title="Ground Motion">
 
-            <br></br>
-            <Form  onSubmit={this.saveAndContinue} validated>
+            <p></p>
 
-              <h5> &nbsp;&nbsp;Enter Earthquake Source Information </h5>        
-              <Form.Group as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                <Col sm={{ span: 2, offset: 0}}><Form.Label> &nbsp;&nbsp; Magnitude (Mw) </Form.Label></Col>
-                <Col sm={{ span: 2, offset: 0}}><Form.Control type="text" name = "Magnitude" size="10" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
+              <Form  onSubmit={this.saveAndContinue} validated>
+                <Row> 
+                  <Col xs={8}>
+                    <h6>1) Enter Earthquake Source Information </h6>        
+                    <Form.Group className="mb-2" as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
+                      <Col xs={2.5}><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (Mw) </Form.Label></Col>
+                      <Col xs={2}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
 
-                <Col sm={{ span: 2, offset: 0}}><Form.Label> &nbsp;&nbsp; Distance (km) </Form.Label></Col>
-                <Col sm={{ span: 2, offset: 0}}><Form.Control type="text" name = "Distance" defaultValue={this.props.inputValues.Distance} required onChange={this.props.handleChange}/></Col>
+                      <Col xs={2.5}><Form.Label>Distance (km) </Form.Label></Col>
+                      <Col xs={2}><Form.Control type="text" name = "Distance" defaultValue={this.props.inputValues.Distance} required onChange={this.props.handleChange}/></Col>
 
-                <Col sm={{ span: 2, offset: 0}}><Form.Label> &nbsp;&nbsp; Select Region </Form.Label></Col>
-                <Col sm={{ span: 2, offset: 0}}>
-                    <Form.Control as="select" name= "Region" defaultValue={this.props.inputValues.Region} required onChange={this.props.handleChange}>
-                      <option value="cena">CENA- Central and Eastern North America</option>
-                      <option value="wna">WNA- Western North America</option>
-                    </Form.Control>
-                </Col>
-              </Form.Group>
+                      <Col xs={1.0}><Form.Label>Region </Form.Label></Col>
+                      <Col xs={3}>
+                          <Form.Control as="select" name= "Region" defaultValue={this.props.inputValues.Region} required onChange={this.props.handleChange}>
+                            <option value="cena">CENA</option>
+                            <option value="wna">WNA</option>
+                          </Form.Control>
+                      </Col>
+                    </Form.Group>
 
-              <h5> &nbsp;&nbsp;<font color="red">OR</font> Upload Frequency Amplitude Spectrum File </h5>
-                <Form.Group as={Row} controlId="Date" >
-                 <Col sm={{ span: -1, offset: 0 }}><Form.Label> &nbsp;&nbsp; </Form.Label></Col>
-                 <Col sm={{ span: 0, offset: 0 }}><Form.Control type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile} /></Col>
-              </Form.Group>
+                    <p></p>
 
-              <div style={{ height: "400px" }}>
+                    <Form.Group as={Row} controlId="Date" >
+                      <Col xs={6}><Form.Label> <h6>2) <font color="red">OR</font> Upload Frequency Amplitude Spectrum </h6> </Form.Label></Col>
+                      <Col xs={4}><Form.Control type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile} /></Col>
+                    </Form.Group>
 
-                <ResponsiveLine
-                  data={data}
-                  margin={{ top: 50, right: 110, bottom: 50, left: 70 }}
-                  xScale={{ type: 'log', base: 10, max: 'auto' }}
-                  // yScale={{ type: 'log', base: 10, max: 'auto' }}
-                  axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickRotation: -90,  tickValues: [0.01, 0.1, 1.0, 10]}}
-                  axisTop={{ orient: 'top', tickSize: 5, tickValues: [0.01, 0.1, 1.0, 10]}}
-                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
-                  axisRight={{ orient: 'right', tickSize: 5,  tickRotation: 0}}
-                  colors={{ scheme: 'category10' }}
-                  enablePoints={false}
-                  useMesh={true}
-               />
-              </div>
+                    <div style={{ height: "350px" }}>
+                      <ResponsiveLine
+                        data={data}
+                        margin={{ top: 0, right: 0, bottom: 50, left: 70 }}
+                        xScale={{ type: 'log', base: 10, max: 'auto' }}
+                        // yScale={{ type: 'log', base: 10, min:0.0001, max: 0.1 }}
+                        axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: 0, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
+                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickValues: [0.0001, 0.001, 0.01, 1.0, 10],  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        colors={{ scheme: 'category10' }}
+                        enablePoints={false}
+                        useMesh={true}
+                     />
+                    </div>
 
-              <p> </p>
-              <Button variant="secondary" onClick={this.back}>Back</Button> {' '}
-              <Button variant="primary" type="submit">Next</Button>
+                  </Col>
+
+                  <Col xs={4}>
+                    <Tabs id="Profiles" defaultActiveKey="Vs_Profile" transition={false} >
+                        <Tab eventKey="Vs_Profile" title="Shear Wave Velocity">
+                            <div style={{ height: 450 }}>
+                                <ResponsiveLine
+                                  data={this.props.inputValues.Site_Vs_Profile}
+                                  margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
+                                  xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                  yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                                  axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                  colors={{ scheme: 'category10' }}
+                                  enablePoints={false}
+                                  useMesh={true}
+
+                                  legends={[
+                                            {
+                                            anchor: 'bottom-left',
+                                            direction: 'row',
+                                            justify: false,
+                                            translateX: 10,
+                                            translateY: -10,
+                                            itemsSpacing: 0,
+                                            itemDirection: 'left-to-right',
+                                            itemWidth: 80,
+                                            itemHeight: 20,
+                                            itemOpacity: 0.75,
+                                            symbolSize: 12,
+                                            symbolShape: 'circle',
+                                            symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                            effects: [
+                                                {
+                                                    on: 'hover',
+                                                    style: {
+                                                        itemBackground: 'rgba(0, 0, 0, .03)',
+                                                        itemOpacity: 1
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]}
+                               />
+                           </div>
+                        </Tab>
+
+                        <Tab eventKey="Damping_Profile" title="Damping">
+                            <div style={{ height: 450 }}>
+                                <ResponsiveLine
+                                  data={this.props.inputValues.Site_Damping_Profile}
+                                  margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
+                                  xScale={{ type: 'linear', min:0,  max: 1.0 }}
+                                  yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                                  axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                  colors={{ scheme: 'category10' }}
+                                  enablePoints={false}
+                                  useMesh={true}
+
+                                  legends={[
+                                            {
+                                            anchor: 'bottom-left',
+                                            direction: 'row',
+                                            justify: false,
+                                            translateX: 10,
+                                            translateY: -10,
+                                            itemsSpacing: 0,
+                                            itemDirection: 'left-to-right',
+                                            itemWidth: 80,
+                                            itemHeight: 20,
+                                            itemOpacity: 0.75,
+                                            symbolSize: 12,
+                                            symbolShape: 'circle',
+                                            symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                            effects: [
+                                                {
+                                                    on: 'hover',
+                                                    style: {
+                                                        itemBackground: 'rgba(0, 0, 0, .03)',
+                                                        itemOpacity: 1
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]}
+                               />
+                           </div>
+                        </Tab>
+                      </Tabs>
+                  </Col>
+                </Row>
+
+                <p> </p>
+                <Button variant="secondary" onClick={this.back}>Back</Button> {' '}
+                <Button variant="primary" type="submit">Next</Button>
               </Form>
             </Tab>
             <Tab eventKey="Analyze" title="Analysis" disabled/>

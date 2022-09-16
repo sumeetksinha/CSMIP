@@ -32,11 +32,6 @@ class Analysis_Settings extends Component{
             <p></p>
             <Form validated onSubmit={this.saveAndContinue} validated>
 
-              <Form.Group as={Row} controlId="Date">
-                <Col sm={{ span: 3, offset: 0 }}><Form.Label> &nbsp;&nbsp; Depth of Interest </Form.Label></Col>
-                <Col sm={{ span: 2, offset: 0 }}><Form.Control type="text" name = "Depth_of_Interest" defaultValue={this.props.inputValues.Depth_of_Interest} required onChange={this.props.handleChange}/></Col>
-              </Form.Group>
-
               <h4>Calculation Parameters</h4>
               <Form.Group as={Row} controlId="Date">
                 <Col sm={{ span: 3, offset: 0 }}><Form.Label> &nbsp;&nbsp; Error Tolerance (%) </Form.Label></Col>

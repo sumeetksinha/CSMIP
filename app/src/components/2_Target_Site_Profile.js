@@ -60,7 +60,7 @@ class Target_Site extends Component{
                                         // console.log(Bedrock)
                                         // console.log("I am here")
                                         newData.Name = "Layer " + (data.length)
-                                        this.props.handleChange([...Layer_1, ...OtherLayers, newData, ...Bedrock])
+                                        this.props.updateSoilLayers([...Layer_1, ...OtherLayers, newData, ...Bedrock])
                                         resolve();
                                         }, 10)
                                 }),
@@ -76,7 +76,7 @@ class Target_Site extends Component{
                                         newData.Gamma=parseFloat(newData.Gamma)
                                         newData.Damping=parseFloat(newData.Damping)
                                         dataUpdate[index] = newData;
-                                        this.props.handleChange([...dataUpdate]);
+                                        this.props.updateSoilLayers([...dataUpdate]);
                                         resolve();
                                         }, 10)
                                 }),
@@ -88,7 +88,7 @@ class Target_Site extends Component{
                                         const dataDelete = [...data];
                                         const index = oldData.tableData.id;
                                         dataDelete.splice(index, 1);
-                                        this.props.handleChange([...dataDelete])
+                                        this.props.updateSoilLayers([...dataDelete])
                                         resolve();
                                         }, 10)
                                 }),
@@ -97,9 +97,18 @@ class Target_Site extends Component{
 
                             actions={[
                                 {icon:()=>  
-                                    <label> <font color="blue" size="+1.5"> <b>Target Depth (m)</b>  </font><input type="text" name="name" size="1" height="20px" value="0" /></label>,
+                                    <label> <font color="blue" size="+1.5"> <b>Target Depth (m)</b>  </font><input type="text" name="Target_Depth" size="1" height="20px" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange} /></label>,
                                     isFreeAction:true,
                                 },
+                                // {icon:()=>  
+                                //     <Form  onSubmit={this.saveAndContinue} validated>
+                                //         <Form.Group style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
+                                //           <Form.Label className="w-100"> Depth (m) </Form.Label>
+                                //           <Form.Control type="text" className="w-25" name = "Target_Depth" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange}/>
+                                //         </Form.Group>
+                                //     </Form>,
+                                //     isFreeAction:true,
+                                // },
                                 {icon:()=>  <div>
                                               <label for="file-input"><CloudUpload/></label>
                                               <input id="file-input" accept=".txt" hidden type="file" />
@@ -136,20 +145,6 @@ class Target_Site extends Component{
                             }}
                             
                         />
-{/*
-                      <Form.Group as={Row} controlId="Date">
-                        <Col sm={{ span: 3, offset: 0 }}><Form.Label> &nbsp;&nbsp; Depth of Interest </Form.Label></Col>
-                        <Col sm={{ span: 2, offset: 0 }}><Form.Control type="text" name = "Depth_of_Interest" defaultValue={this.props.inputValues.Depth_of_Interest} required onChange={this.props.handleChange}/></Col>
-                      </Form.Group>*/}
-
-{/*                    <Form validated onSubmit={this.saveAndContinue} validated>
-                      <Form.Group as={Row} controlId="Date">
-                        <Col sm={{ span: 3, offset: 0 }}><Form.Label> &nbsp;&nbsp; Depth of Interest </Form.Label></Col>
-                        <Col sm={{ span: 2, offset: 0 }}><Form.Control type="text" name = "Depth_of_Interest" defaultValue={this.props.inputValues.Depth_of_Interest} required onChange={this.props.handleChange}/></Col>
-                      </Form.Group>
-                    </Form>*/}
-
-
                         </Col>
                         <Col xs={4}>
                             <Tabs id="Profiles" defaultActiveKey="Vs_Profile" transition={false} >

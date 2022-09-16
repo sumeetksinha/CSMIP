@@ -61,7 +61,7 @@ class Reference_Site extends Component{
                                         // console.log(Bedrock)
                                         // console.log("I am here")
                                         newData.Name = "Layer " + (data.length)
-                                        this.props.handleChange([...Layer_1, ...OtherLayers, newData, ...Bedrock])
+                                        this.props.updateSoilLayers([...Layer_1, ...OtherLayers, newData, ...Bedrock])
                                         resolve();
                                         }, 10)
                                 }),
@@ -78,7 +78,7 @@ class Reference_Site extends Component{
                                         newData.Damping=parseFloat(newData.Damping)
                                         dataUpdate[index] = newData;
                                         // console.log(newData)
-                                        this.props.handleChange([...dataUpdate]);
+                                        this.props.updateSoilLayers([...dataUpdate]);
                                         resolve();
                                         }, 10)
                                 }),
@@ -90,7 +90,7 @@ class Reference_Site extends Component{
                                         const dataDelete = [...data];
                                         const index = oldData.tableData.id;
                                         dataDelete.splice(index, 1);
-                                        this.props.handleChange([...dataDelete])
+                                        this.props.updateSoilLayers([...dataDelete])
                                         resolve();
                                         }, 10)
                                 }),
