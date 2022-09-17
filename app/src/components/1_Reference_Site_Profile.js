@@ -100,7 +100,7 @@ class Reference_Site extends Component{
                             actions={[
                                 {icon:()=>  <div>
                                               <label for="file-input"><CloudUpload/></label>
-                                              <input id="file-input" name= "ReferenceDataFile" accept=".xlsx" hidden type="file" onChange={this.props.handleFile} />
+                                              <input id="file-input" name= "ReferenceDataFile" accept=".xlsx" hidden type="file" onChange={this.props.readSoilProfileData} />
                                             </div>,
                                     tooltip:"Import Data",
                                     onclick:()=>alert("clicked"),

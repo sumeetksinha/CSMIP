@@ -102,10 +102,9 @@ class Target_Site extends Component{
                                 },
                                 {icon:()=>  <div>
                                               <label for="file-input"><CloudUpload/></label>
-                                              <input id="file-input" accept=".txt" hidden type="file" />
+                                              <input id="file-input" name= "TargetDataFile" accept=".xlsx" hidden type="file" onChange={this.props.readSoilProfileData} />
                                             </div>,
-
-                                    tooltip:"Import",
+                                    tooltip:"Import Data",
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },

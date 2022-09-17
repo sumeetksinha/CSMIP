@@ -2,9 +2,9 @@ import React, { Component, useState } from 'react';
 import Tab_1 from "./1_Reference_Site_Profile";
 import Tab_2 from "./2_Target_Site_Profile";
 import Tab_3 from "./3_Ground_Motion";
-import Tab_4 from "./3_Analysis_Settings";
-import Tab_5 from "./4_Results";
-// import { PythonProvider } from "react-py";
+import Tab_4 from "./4_Analysis_Settings";
+import Tab_5 from "./5_Results";
+import * as XLSX from "xlsx";
 
 
 class Application extends Component {
@@ -167,24 +167,7 @@ class Application extends Component {
         this.setState({[inputName]:inputValue});
 
         if(inputName=="Target_Depth"){
-
-            const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile;
-            const Site_Damping_Profile_Data = this.state.Site_Damping_Profile;
-            const Vs_Profile_Data = Site_Vs_Profile_Data[0].data.concat(Site_Vs_Profile_Data[1].data)
-
-            var maxValue = Math.max.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
-            var minValue = Math.min.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
-
-            var Target_Depth_Vs_Data  = [{"x":minValue,"y":inputValue},{"x":maxValue,"y":inputValue}];
-            var Target_Depth_Damping_Data  = [{"x":0,"y":inputValue},{"x":1.0,"y":inputValue}];
-
-            // update Vs and Damping profile arrays
-            Site_Vs_Profile_Data[2].data = Target_Depth_Vs_Data;
-            Site_Damping_Profile_Data[2].data = Target_Depth_Damping_Data;
-
-            // update the state 
-            this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
-            this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
+            this.update_Target_Depth_Plots();
         }
 
     }
@@ -233,6 +216,7 @@ class Application extends Component {
    // function to handle upload of FAS file
     readExcelProfileData = (event) => {
 
+        // get the id and input value
         const inputName  = event.target.name;
         const inputValue = event.target.value;
 
@@ -240,48 +224,93 @@ class Application extends Component {
         let file_content =""
 
         reader.onload = function(event) {  
-            const file_data_array =  reader.result.split(/\r?\n/);
-            const FAS_Data = this.state.FAS
 
-            let n = file_data_array.length;
-            var FAS_Data_Array  = [];
-            var FAS_Data_Points = {};
+            const bstr = event.target.result;
+            const workbook = XLSX.read(bstr, { type: "binary" });
 
-            for (let i = 0; i < n; i++){
-                let data = file_data_array[i].split(",");
-                FAS_Data_Points.y = data[1];
-                FAS_Data_Points.x = data[0];
-                FAS_Data_Array.push({...FAS_Data_Points});
+            var worksheetName = workbook.SheetNames[0];
+
+            console.log(workbook.SheetNames)
+
+            if(workbook.SheetNames.length>1){
+                if(inputName=="ReferenceDataFile") worksheetName='Reference';
+                if(inputName=="TargetDataFile") worksheetName='Target';
             }
 
-            FAS_Data[0].data = FAS_Data_Array;
-            this.setState({FAS:FAS_Data});
+            console.log(worksheetName)
+
+            const worksheet     = workbook.Sheets[worksheetName];
+
+            const data_array = XLSX.utils.sheet_to_csv(worksheet, { header: 1 }).split(/\r?\n/);
+
+            console.log(data_array[1]);
+
+            let n = data_array.length;
+            var Site_Soil_Profile_Data_Array  = [];
+            var Site_Soil_Profile_Data_Points = {};
+
+            for (let i = 1; i < n; i++){
+                let data = data_array[i].split(",");
+                Site_Soil_Profile_Data_Points.Name      = data[0];
+                Site_Soil_Profile_Data_Points.Thickness = parseFloat(data[1]);
+                Site_Soil_Profile_Data_Points.Vs        = parseFloat(data[2]);
+                Site_Soil_Profile_Data_Points.Gamma     = parseFloat(data[3]);
+                Site_Soil_Profile_Data_Points.Damping   = parseFloat(data[4]);
+                Site_Soil_Profile_Data_Points.Soil_Model= 3;
+                Site_Soil_Profile_Data_Array.push({...Site_Soil_Profile_Data_Points});
+            }
+
+            console.log(inputName)
+
+            if(inputName=="ReferenceDataFile"){
+                this.setState({Reference_Site_Soil_Profile:Site_Soil_Profile_Data_Array});
+                this.update_Reference_Site_Profile_Plots();
+            }
+            if(inputName=="TargetDataFile"){
+                this.setState({Target_Site_Soil_Profile:Site_Soil_Profile_Data_Array});
+                this.update_Target_Site_Profile_Plots();
+            }
+            this.update_Target_Depth_Plots();
 
         }.bind(this);
 
+        // get the excel file
         var file = event.target.files[0]; 
-        reader.readAsText(file)
+        reader.readAsBinaryString(file);
+    }
 
-        // try{
-        //    reader.readAsText(file)
-        // }catch(error){
-        //     console.log("Error")
-        //     alert("Failed to read file");
-        // }
+
+    //////////////////////////////////////////////////////////////////
+    // Update Target Depth Plot
+    //////////////////////////////////////////////////////////////////
+    update_Target_Depth_Plots(){
+
+        const Target_Depth = this.state.Target_Depth;
+        const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile;
+        const Site_Damping_Profile_Data = this.state.Site_Damping_Profile;
+        const Vs_Profile_Data = Site_Vs_Profile_Data[0].data.concat(Site_Vs_Profile_Data[1].data)
+
+        var maxValue = Math.max.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
+        var minValue = Math.min.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
+
+        var Target_Depth_Vs_Data  = [{"x":minValue,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
+        var Target_Depth_Damping_Data  = [{"x":0,"y":Target_Depth},{"x":1.0,"y":Target_Depth}];
+
+        // update Vs and Damping profile arrays
+        Site_Vs_Profile_Data[2].data = Target_Depth_Vs_Data;
+        Site_Damping_Profile_Data[2].data = Target_Depth_Damping_Data;
+
+        // update the state 
+        this.setState({Site_Vs_Profile:Site_Vs_Profile_Data});
+        this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
     }
 
     //////////////////////////////////////////////////////////////////
-    // Update the properties of Reference Site Profile
+    // Update the Reference Site Profile Plot
     //////////////////////////////////////////////////////////////////
-    update_Reference_Site_Soil_Profile = (newData) => {
+    update_Reference_Site_Profile_Plots(){
 
-        // // to update new data to fix bedrock
-        // var Fix_BedRock = newData;
-        // Fix_BedRock.slice(-1)[0].Thickness=0;
-        // this.setState({Reference_Site_Soil_Profile:Fix_BedRock});
-
-        // update the state to new Reference Site Profile 
-        this.setState({Reference_Site_Soil_Profile:newData});
+        console.log("i am he")
 
         // get the shear wave velocity, damping and refernce site soil profile from the current state
         const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile
@@ -336,20 +365,18 @@ class Application extends Component {
         this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
     }
 
-    //////////////////////////////////////////////////////////////////
-    // Update the properties of Target Site Profile
-    //////////////////////////////////////////////////////////////////
-    update_Target_Site_Soil_Profile = (newData) => {
 
-        console.log("I ama hgere ")
+    //////////////////////////////////////////////////////////////////
+    // Update the Target Site Profile Plot
+    //////////////////////////////////////////////////////////////////
+    update_Target_Site_Profile_Plots(){
 
-        // update the state to new Target Site Profile 
-        this.setState({Target_Site_Soil_Profile:newData});
+        console.log("i am he")
 
         // get the shear wave velocity, damping and refernce site soil profile from the current state
         const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile
         const Site_Damping_Profile_Data = this.state.Site_Damping_Profile
-        const Target_Site_Profile = this.state.Target_Site_Soil_Profile;
+        const Target_Site_Profile    = this.state.Target_Site_Soil_Profile;
 
         // calculate the number of layers
         let Target_Site_Num_Layers = Target_Site_Profile.length;
@@ -399,6 +426,34 @@ class Application extends Component {
         this.setState({Site_Damping_Profile:Site_Damping_Profile_Data});
     }
 
+    //////////////////////////////////////////////////////////////////
+    // Update the properties of Reference Site Profile
+    //////////////////////////////////////////////////////////////////
+    update_Reference_Site_Soil_Profile = (newData) => {
+
+        // // to update new data to fix bedrock
+        // var Fix_BedRock = newData;
+        // Fix_BedRock.slice(-1)[0].Thickness=0;
+        // this.setState({Reference_Site_Soil_Profile:Fix_BedRock});
+
+        // update the state to new Reference Site Profile 
+        this.setState({Reference_Site_Soil_Profile:newData});
+        this.update_Reference_Site_Profile_Plots();
+        this.update_Target_Depth_Plots();
+
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Update the properties of Target Site Profile
+    //////////////////////////////////////////////////////////////////
+    update_Target_Site_Soil_Profile = (newData) => {
+
+        // update the state to new Target Site Profile 
+        this.setState({Target_Site_Soil_Profile:newData});
+        this.update_Target_Site_Profile_Plots();
+        this.update_Target_Depth_Plots();
+    }
+
     render(){
         const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile} = this.state;
         const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, AccelTransferFunctionOutput,ResultsFile};
@@ -406,8 +461,9 @@ class Application extends Component {
         switch(step) {
         case 1:
             return <Tab_1
-                    nextStep={this.nextStep}
-                    updateSoilLayers = {this.update_Reference_Site_Soil_Profile}
+                    nextStep              = {this.nextStep}
+                    updateSoilLayers      = {this.update_Reference_Site_Soil_Profile}
+                    readSoilProfileData   = {this.readExcelProfileData}
                     inputValues={inputValues}
                     />
         case 2:
@@ -415,6 +471,7 @@ class Application extends Component {
                     nextStep={this.nextStep}
                     prevStep={this.prevStep}
                     updateSoilLayers = {this.update_Target_Site_Soil_Profile}
+                    readSoilProfileData   = {this.readExcelProfileData}
                     handleChange = {this.handleChange}
                     inputValues={inputValues}
                     />
