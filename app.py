@@ -168,75 +168,75 @@ def Generate_FAS():
     # print(Depth_of_Interest)
 
 
-# @app.route('/analyze', methods=['POST'])
-# def login():
+@app.route('/analyze', methods=['POST'])
+def login():
 
-#     print("Sumeet")
-#     # print(request.json)
+    print("Sumeet")
+    # print(request.json)
 
-#     Depth_of_Interest           = request.json["Depth_of_Interest"];
-#     Reference_Site_Soil_Profile = request.json["Reference_Site_Soil_Profile"];
-#     Target_Site_Soil_Profile    = request.json["Target_Site_Soil_Profile"];
+    Depth_of_Interest           = request.json["Depth_of_Interest"];
+    Reference_Site_Soil_Profile = request.json["Reference_Site_Soil_Profile"];
+    Target_Site_Soil_Profile    = request.json["Target_Site_Soil_Profile"];
 
-#     New_Target_Site_Soil_Profile = [];
+    New_Target_Site_Soil_Profile = [];
 
-#     depth = 0; layer_num=1;
-#     for i in range(0,len(Target_Site_Soil_Profile)):
-#         depth = depth+Target_Site_Soil_Profile[i]["Thickness"];
-#         if(depth>0):
-#             new_layer = Target_Site_Soil_Profile[i];
-#             new_layer["thickness"] = (depth-Depth_of_Interest);
-#             new_layer["thickness"] = (depth-Depth_of_Interest);
-#             depth = Depth_of_Interest;
+    depth = 0; layer_num=1;
+    for i in range(0,len(Target_Site_Soil_Profile)):
+        depth = depth+Target_Site_Soil_Profile[i]["Thickness"];
+        if(depth>0):
+            new_layer = Target_Site_Soil_Profile[i];
+            new_layer["thickness"] = (depth-Depth_of_Interest);
+            new_layer["thickness"] = (depth-Depth_of_Interest);
+            depth = Depth_of_Interest;
 
 
-#     print(Depth_of_Interest)
+    print(Depth_of_Interest)
 
-    # # print("Sumeet")
-    # # print(request.json) # get the request,json from frontend
-    # # print(os.getcwd()) # get current working dierctory
+    # print("Sumeet")
+    # print(request.json) # get the request,json from frontend
+    # print(os.getcwd()) # get current working dierctory
 
-    # # read the sample jason file and create a new input file
-    # UniqFileName = CreateInputFileForAnalysis("Sample_Input.json",request.json)   
-    # # UniqFileName = "Sample_Input.json"
-    # # command = "\"C:\Program Files (x86)\Strata 1.0.0\strata.exe\" -b " +  UniqFileName
-    # command = "\"/mnt/c/Program Files (x86)/Strata 1.0.0\" -b " +  UniqFileName
+    # read the sample jason file and create a new input file
+    UniqFileName = CreateInputFileForAnalysis("Sample_Input.json",request.json)   
+    # UniqFileName = "Sample_Input.json"
+    # command = "\"C:\Program Files (x86)\Strata 1.0.0\strata.exe\" -b " +  UniqFileName
+    command = "\"/mnt/c/Program Files (x86)/Strata 1.0.0\" -b " +  UniqFileName
 
-    # process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    # process.wait()
-    # # print (process.returncode)
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+    process.wait()
+    # print (process.returncode)
 
-    # # read the json output file 
-    # Fjson = open(UniqFileName,)
-    # # returns JSON object as a dictionary
-    # data = json.load(Fjson)
-    # # print(data)
-    # hasResults = data["hasResults"]
+    # read the json output file 
+    Fjson = open(UniqFileName,)
+    # returns JSON object as a dictionary
+    data = json.load(Fjson)
+    # print(data)
+    hasResults = data["hasResults"]
 
-    # if(hasResults):
-    #     Output_maxFreq = data["outputCatalog"]["frequency"]['max']
-    #     Output_minFreq = data["outputCatalog"]["frequency"]['min']
-    #     Output_sizeFreq = data["outputCatalog"]["frequency"]['size']
-    #     Output_Freq     = np.linspace(np.log10(Output_minFreq),np.log10(Output_maxFreq),Output_sizeFreq)
-    #     Output_Freq     = np.power(10,Output_Freq)
+    if(hasResults):
+        Output_maxFreq = data["outputCatalog"]["frequency"]['max']
+        Output_minFreq = data["outputCatalog"]["frequency"]['min']
+        Output_sizeFreq = data["outputCatalog"]["frequency"]['size']
+        Output_Freq     = np.linspace(np.log10(Output_minFreq),np.log10(Output_maxFreq),Output_sizeFreq)
+        Output_Freq     = np.power(10,Output_Freq)
 
-    #     Output_maxPeriod = data["outputCatalog"]["period"]['max']
-    #     Output_minPeriod = data["outputCatalog"]["period"]['min']
-    #     Output_sizePeriod = data["outputCatalog"]["period"]['size']
-    #     Output_Period     = np.linspace(np.log10(Output_minPeriod),np.log10(Output_maxPeriod),Output_sizePeriod)
-    #     Output_Period     = np.power(10,Output_Period)
+        Output_maxPeriod = data["outputCatalog"]["period"]['max']
+        Output_minPeriod = data["outputCatalog"]["period"]['min']
+        Output_sizePeriod = data["outputCatalog"]["period"]['size']
+        Output_Period     = np.linspace(np.log10(Output_minPeriod),np.log10(Output_maxPeriod),Output_sizePeriod)
+        Output_Period     = np.power(10,Output_Period)
 
-    #     # read AccelTransferFunctionOutput at the given depth 
-    #     AccelTransferFunctionOutput = data["outputCatalog"]["ratiosOutputCatalog"][0]["data"][0][0]
-    #     # print(AccelTransferFunctionOutput)
-    #     AccelTransferFunctionOutput_List = []
+        # read AccelTransferFunctionOutput at the given depth 
+        AccelTransferFunctionOutput = data["outputCatalog"]["ratiosOutputCatalog"][0]["data"][0][0]
+        # print(AccelTransferFunctionOutput)
+        AccelTransferFunctionOutput_List = []
 
-    #     for i in range(len(AccelTransferFunctionOutput)):
-    #         AccelTransferFunctionOutput_List.append({"x":Output_Freq[i],"y":AccelTransferFunctionOutput[i]})
+        for i in range(len(AccelTransferFunctionOutput)):
+            AccelTransferFunctionOutput_List.append({"x":Output_Freq[i],"y":AccelTransferFunctionOutput[i]})
 
-    #     AccelTransferFunctionOutput = [{"id": "AccelTransferFunctionOutput",
-    #                                     "data":AccelTransferFunctionOutput_List
-    #                                 },]
+        AccelTransferFunctionOutput = [{"id": "AccelTransferFunctionOutput",
+                                        "data":AccelTransferFunctionOutput_List
+                                    },]
 
     # return jsonify({'whether_analyzed': 2, "AccelTransferFunctionOutput":AccelTransferFunctionOutput , "ResultsFile":data}), 200
     return jsonify({'whether_analyzed': 2}), 200
