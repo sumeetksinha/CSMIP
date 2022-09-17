@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
+import { Form, Button, Col, Row, Container, Tabs, Tab, Spinner} from 'react-bootstrap';
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsiveBar } from "@nivo/bar";
 
@@ -21,7 +21,6 @@ class Ground_Motion extends Component{
         const whether_analyzed = this.props.inputValues.whether_analyzed;
         const data             = this.props.inputValues.FAS
 
-        console.log(data)
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Ground_Motion" transition={false}>
             <Tab eventKey="Reference_Site" title="Reference Site" disabled />
@@ -33,7 +32,14 @@ class Ground_Motion extends Component{
               <Form  onSubmit={this.saveAndContinue} validated>
                 <Row> 
                   <Col xs={8}>
-                    <h6>1) Enter Earthquake Source Information </h6>        
+                    <h6>1) Enter Earthquake Source Information {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="grow" size="sm" animation="border"/> Generate</Button>) : 
+                (<Button variant="primary" onClick={this.props.Generate_FAS} >Generate</Button>)
+              }
+
+
+
+{/*<Button className="align-self-center " variant="primary" style={{  alignItems:"center", height: "50%", marginTop: -5 }} onClick={this.props.Generate_FAS}> Generate</Button> 
+*/}</h6> 
                     <Form.Group className="mb-2" as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
                       <Col xs={2.5}><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (Mw) </Form.Label></Col>
                       <Col xs={2}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
@@ -48,6 +54,7 @@ class Ground_Motion extends Component{
                             <option value="wna">WNA</option>
                           </Form.Control>
                       </Col>
+
                     </Form.Group>
 
                     <p></p>
@@ -62,9 +69,10 @@ class Ground_Motion extends Component{
                         data={data}
                         margin={{ top: 0, right: 0, bottom: 50, left: 70 }}
                         xScale={{ type: 'log', base: 10, max: 'auto' }}
-                        // yScale={{ type: 'log', base: 10, min:0.0001, max: 0.1 }}
+                        // yScale={{ type: 'log', base: 10, min:0.0001, max: 1 }}
                         axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: 0, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
-                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickValues: [0.0001, 0.001, 0.01, 1.0, 10],  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        // axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickValues: [0.0001, 0.001, 0.01, 0.1, 1.0, 10],  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
                         colors={{ scheme: 'category10' }}
                         enablePoints={false}
                         useMesh={true}

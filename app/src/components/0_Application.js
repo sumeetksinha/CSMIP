@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import Tab_1 from "./1_Reference_Site_Profile";
 import Tab_2 from "./2_Target_Site_Profile";
-import Tab_3 from "./2_Ground_Motion";
+import Tab_3 from "./3_Ground_Motion";
 import Tab_4 from "./3_Analysis_Settings";
 import Tab_5 from "./4_Results";
 // import { PythonProvider } from "react-py";
@@ -14,7 +14,7 @@ class Application extends Component {
         // set the initial input values
         this.state = {
             step: 1,
-            Target_Depth:10, // Depth of Interest
+            Target_Depth:15,     // Depth of Interest
             Tol: 2,              // error tolerance (%)
             MaxIter: 15,         // maximum number of iterations
             EffStrain: 0.65,     // effective strain ratio
@@ -37,8 +37,8 @@ class Application extends Component {
                           {Name: 'Layer 4',Thickness: 20, Vs: 100, Gamma: 20, Damping: 0.5, Soil_Model: 3},
                           {Name: 'Bedrock',Thickness: 20, Vs: 760, Gamma: 22, Damping: 1, Soil_Model: 3},], // Reference_Site_Soil_Profile
 
-            Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":10},{"x":760, "y":10}]}], // Reference Vs Profile
-            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.5, "y":0},{"x":0.5, "y":10},{"x":0.5, "y":10},{"x":0.5, "y":30},{"x":0.5, "y":30},{"x":0.5, "y":50},{"x":0.5, "y":50},{"x":0.5, "y":70},{"x":0.8, "y":70},{"x":0.8, "y":90}]},{"id": "Target","data": [{"x":.2, "y":0},{"x":.2, "y":10},{"x":.2, "y":10},{"x":.2, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":10},{"x":1, "y":10}]}], // Reference Vs Profile
+            Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":15},{"x":760, "y":15}]}], // Reference Vs Profile
+            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.5, "y":0},{"x":0.5, "y":10},{"x":0.5, "y":10},{"x":0.5, "y":30},{"x":0.5, "y":30},{"x":0.5, "y":50},{"x":0.5, "y":50},{"x":0.5, "y":70},{"x":0.8, "y":70},{"x":0.8, "y":90}]},{"id": "Target","data": [{"x":.2, "y":0},{"x":.2, "y":10},{"x":.2, "y":10},{"x":.2, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":15},{"x":1, "y":15}]}], // Reference Vs Profile
             Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 10, Vs: 20, Gamma: 20, Damping: 0.1, Soil_Model: 3},
                          {Name: 'Bedrock',Thickness: 80, Vs: 700, Gamma: 20, Damping: 0.1, Soil_Model: 3},], // Target_Site_Soil_Profile
         }
@@ -103,6 +103,48 @@ class Application extends Component {
         .catch(error => console. log(error));
     }
 
+
+
+    // Function to create the FAS inout based on 
+    // the input properties from user
+    Generate_FAS = () => {
+
+        const { step } = this.state
+        console.log(this.state)
+
+        this.setState({whether_analyzed : 1})
+
+
+        fetch('http://localhost:5000/Generate_FAS',
+            {
+                method: 'POST',
+                mode: 'cors',
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(this.state)
+            }
+        )
+        .then(response => response.json())
+        .then(json => {
+            console. log(json);
+            this.setState({
+                whether_analyzed : json.whether_analyzed,
+                FAS : json.FAS,
+            })
+            console.log(this.state);
+
+            if (this.state.whether_analyzed == 2){
+                this.setState({
+                    whether_analyzed : 0
+                })
+            }           
+        })
+        .catch(error => console. log(error));
+    }
+
+
     // // 
 
     // process = (dataString) => {
@@ -136,7 +178,6 @@ class Application extends Component {
             var Target_Depth_Vs_Data  = [{"x":minValue,"y":inputValue},{"x":maxValue,"y":inputValue}];
             var Target_Depth_Damping_Data  = [{"x":0,"y":inputValue},{"x":1.0,"y":inputValue}];
 
-
             // update Vs and Damping profile arrays
             Site_Vs_Profile_Data[2].data = Target_Depth_Vs_Data;
             Site_Damping_Profile_Data[2].data = Target_Depth_Damping_Data;
@@ -148,70 +189,44 @@ class Application extends Component {
 
     }
 
-    // function to handle upload of FAS file
+   // function to handle upload of FAS file
     handleFile = (event) => {
-        console.log("Handeling_File")
 
         const inputName  = event.target.name;
         const inputValue = event.target.value;
 
-        // console.log(inputName)
-        // console.log(inputValue)
+        const reader = new FileReader()
+        let file_content =""
 
-        // // run the validation here 
-        // console.log(event.target.files)
+        reader.onload = function(event) {  
+            const file_data_array =  reader.result.split(/\r?\n/);
+            const FAS_Data = this.state.FAS
+
+            let n = file_data_array.length;
+            var FAS_Data_Array  = [];
+            var FAS_Data_Points = {};
+
+            for (let i = 0; i < n; i++){
+                let data = file_data_array[i].split(",");
+                FAS_Data_Points.y = data[1];
+                FAS_Data_Points.x = data[0];
+                FAS_Data_Array.push({...FAS_Data_Points});
+            }
+
+            FAS_Data[0].data = FAS_Data_Array;
+            this.setState({FAS:FAS_Data});
+
+        }.bind(this);
 
         var file = event.target.files[0]; 
-        // console.log(file.name)
+        reader.readAsText(file)
 
-        if (file) {
-            let reader = new FileReader();
-            reader.onload = function(e) { 
-                var contents = e.target.result;
-                var lines = contents
-                .split("\r\n")
-                .map(function(lineStr) {
-                    return lineStr.split(",");
-                })
-                lines = lines.map(function(elem){
-                    return elem.map(function(elem2){
-                        return parseFloat(elem2)
-                    })
-                })
-                .slice(0);
-
-                // convert array to jason
-                var keys = ["x","y"];
-                var jasonData = [],
-                data = lines,
-                cols = keys,
-                m = cols.length;
-                for (var i=0; i<data.length; i++) {
-                    var d = data[i],
-                            o = {};
-                    for (var j=0; j<m; j++)
-                            o[cols[j]] = d[j];
-                    jasonData.push(o);
-                }
-
-                jasonData = [{
-                            "id": "FAS",
-                            "data": jasonData
-                            },
-                            ]
-
-                this.setState({FAS:jasonData});
-                console. log(jasonData)
-                console. log(this.state.FAS)
-            }.bind(this)
-            reader.readAsText(file);
-        } else { 
-            alert("Failed to load file");
-        }
-
-        console.log(file)
-        
-        this.setState({[inputName]:file});
+        // try{
+        //    reader.readAsText(file)
+        // }catch(error){
+        //     console.log("Error")
+        //     alert("Failed to read file");
+        // }
     }
 
     //////////////////////////////////////////////////////////////////
@@ -369,6 +384,7 @@ class Application extends Component {
                     handleFile = {this.handleFile}
                     handleChange = {this.handleChange}
                     inputValues={inputValues}
+                    Generate_FAS={this.Generate_FAS}
                     />
         case 4:
             return <Tab_4

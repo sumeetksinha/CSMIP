@@ -100,15 +100,6 @@ class Target_Site extends Component{
                                     <label> <font color="blue" size="+1.5"> <b>Target Depth (m)</b>  </font><input type="text" name="Target_Depth" size="1" height="20px" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange} /></label>,
                                     isFreeAction:true,
                                 },
-                                // {icon:()=>  
-                                //     <Form  onSubmit={this.saveAndContinue} validated>
-                                //         <Form.Group style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                                //           <Form.Label className="w-100"> Depth (m) </Form.Label>
-                                //           <Form.Control type="text" className="w-25" name = "Target_Depth" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange}/>
-                                //         </Form.Group>
-                                //     </Form>,
-                                //     isFreeAction:true,
-                                // },
                                 {icon:()=>  <div>
                                               <label for="file-input"><CloudUpload/></label>
                                               <input id="file-input" accept=".txt" hidden type="file" />
