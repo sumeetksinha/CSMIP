@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Form, Button, Col, Row, Container, Tabs, Tab, Spinner} from 'react-bootstrap';
 import { ResponsiveLine } from '@nivo/line'
 import { ResponsiveBar } from "@nivo/bar";
+import Tooltip, { TooltipProps }from "@material-ui/core/Tooltip";
+import { withStyles } from "@material-ui/core/styles";
+
 
 
 
@@ -20,6 +23,19 @@ class Ground_Motion extends Component{
     render() {
         const whether_analyzed = this.props.inputValues.whether_analyzed;
         const data             = this.props.inputValues.FAS
+
+        const styles = {
+                tooltip: {
+                    // width: "92px",
+                    // height: "36px",
+                    borderRadius: "18px",
+                    boxShadow: "0 20px 80px 0",
+                    backgroundColor: "green"
+                }
+            };
+
+        const CustomTooltip = withStyles(styles)(Tooltip);
+
 
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Ground_Motion" transition={false}>
@@ -41,13 +57,13 @@ class Ground_Motion extends Component{
 {/*<Button className="align-self-center " variant="primary" style={{  alignItems:"center", height: "50%", marginTop: -5 }} onClick={this.props.Generate_FAS}> Generate</Button> 
 */}</h6> 
                     <Form.Group className="mb-2" as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                      <Col xs={2.5}><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (Mw) </Form.Label></Col>
+                      <Col xs={2.5}><CustomTooltip title="Earthquake Magnitue" placement="down" ><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (Mw) </Form.Label></CustomTooltip></Col>
                       <Col xs={2}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
 
-                      <Col xs={2.5}><Form.Label>Distance (km) </Form.Label></Col>
+                      <Col xs={2.5}><CustomTooltip title="Distance of target site from earthquake source" placement="down" ><Form.Label>Distance (km) </Form.Label></CustomTooltip></Col>
                       <Col xs={2}><Form.Control type="text" name = "Distance" defaultValue={this.props.inputValues.Distance} required onChange={this.props.handleChange}/></Col>
 
-                      <Col xs={1.0}><Form.Label>Region </Form.Label></Col>
+                      <Col xs={1.0}><CustomTooltip title="Region in USA" placement="down" ><Form.Label>Region </Form.Label></CustomTooltip></Col>
                       <Col xs={3}>
                           <Form.Control as="select" name= "Region" defaultValue={this.props.inputValues.Region} required onChange={this.props.handleChange}>
                             <option value="cena">CENA</option>
@@ -99,7 +115,7 @@ class Ground_Motion extends Component{
                                   legends={[
                                             {
                                             anchor: 'bottom-left',
-                                            direction: 'row',
+                                            direction: 'column',
                                             justify: false,
                                             translateX: 10,
                                             translateY: -10,
@@ -142,7 +158,7 @@ class Ground_Motion extends Component{
                                   legends={[
                                             {
                                             anchor: 'bottom-left',
-                                            direction: 'row',
+                                            direction: 'column',
                                             justify: false,
                                             translateX: 10,
                                             translateY: -10,

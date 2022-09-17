@@ -37,8 +37,8 @@ class Application extends Component {
                           {Name: 'Layer 4',Thickness: 20, Vs: 100, Gamma: 20, Damping: 0.5, Soil_Model: 3},
                           {Name: 'Bedrock',Thickness: 20, Vs: 760, Gamma: 22, Damping: 1, Soil_Model: 3},], // Reference_Site_Soil_Profile
 
-            Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":15},{"x":760, "y":15}]}], // Reference Vs Profile
-            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.5, "y":0},{"x":0.5, "y":10},{"x":0.5, "y":10},{"x":0.5, "y":30},{"x":0.5, "y":30},{"x":0.5, "y":50},{"x":0.5, "y":50},{"x":0.5, "y":70},{"x":0.8, "y":70},{"x":0.8, "y":90}]},{"id": "Target","data": [{"x":.2, "y":0},{"x":.2, "y":10},{"x":.2, "y":10},{"x":.2, "y":90}]},{"id": "Target_Depth","data": [{"x":0, "y":15},{"x":1, "y":15}]}], // Reference Vs Profile
+            Site_Vs_Profile: [{"id": "Reference","data": [{"x":150, "y":0},{"x":150, "y":10},{"x":250, "y":10},{"x":250, "y":30},{"x":100, "y":30},{"x":100, "y":50},{"x":100, "y":50},{"x":100, "y":70},{"x":760, "y":70},{"x":760, "y":90}]},{"id": "Target","data": [{"x":20, "y":0},{"x":20, "y":10},{"x":700, "y":10},{"x":700, "y":90}]},{"id": "Target Depth","data": [{"x":0, "y":15},{"x":760, "y":15}]}], // Reference Vs Profile
+            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.5, "y":0},{"x":0.5, "y":10},{"x":0.5, "y":10},{"x":0.5, "y":30},{"x":0.5, "y":30},{"x":0.5, "y":50},{"x":0.5, "y":50},{"x":0.5, "y":70},{"x":0.8, "y":70},{"x":0.8, "y":90}]},{"id": "Target","data": [{"x":.2, "y":0},{"x":.2, "y":10},{"x":.2, "y":10},{"x":.2, "y":90}]},{"id": "Target Depth","data": [{"x":0, "y":15},{"x":1, "y":15}]}], // Reference Vs Profile
             Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 10, Vs: 20, Gamma: 20, Damping: 0.1, Soil_Model: 3},
                          {Name: 'Bedrock',Thickness: 80, Vs: 700, Gamma: 20, Damping: 0.1, Soil_Model: 3},], // Target_Site_Soil_Profile
         }
@@ -191,6 +191,47 @@ class Application extends Component {
 
    // function to handle upload of FAS file
     handleFile = (event) => {
+
+        const inputName  = event.target.name;
+        const inputValue = event.target.value;
+
+        const reader = new FileReader()
+        let file_content =""
+
+        reader.onload = function(event) {  
+            const file_data_array =  reader.result.split(/\r?\n/);
+            const FAS_Data = this.state.FAS
+
+            let n = file_data_array.length;
+            var FAS_Data_Array  = [];
+            var FAS_Data_Points = {};
+
+            for (let i = 0; i < n; i++){
+                let data = file_data_array[i].split(",");
+                FAS_Data_Points.y = data[1];
+                FAS_Data_Points.x = data[0];
+                FAS_Data_Array.push({...FAS_Data_Points});
+            }
+
+            FAS_Data[0].data = FAS_Data_Array;
+            this.setState({FAS:FAS_Data});
+
+        }.bind(this);
+
+        var file = event.target.files[0]; 
+        reader.readAsText(file)
+
+        // try{
+        //    reader.readAsText(file)
+        // }catch(error){
+        //     console.log("Error")
+        //     alert("Failed to read file");
+        // }
+    }
+
+
+   // function to handle upload of FAS file
+    readExcelProfileData = (event) => {
 
         const inputName  = event.target.name;
         const inputValue = event.target.value;

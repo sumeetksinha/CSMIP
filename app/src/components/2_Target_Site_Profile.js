@@ -155,7 +155,7 @@ class Target_Site extends Component{
                                           legends={[
                                                     {
                                                     anchor: 'bottom-left',
-                                                    direction: 'row',
+                                                    direction: 'column',
                                                     justify: false,
                                                     translateX: 10,
                                                     translateY: -10,
@@ -198,7 +198,7 @@ class Target_Site extends Component{
                                           legends={[
                                                     {
                                                     anchor: 'bottom-left',
-                                                    direction: 'row',
+                                                    direction: 'column',
                                                     justify: false,
                                                     translateX: 10,
                                                     translateY: -10,

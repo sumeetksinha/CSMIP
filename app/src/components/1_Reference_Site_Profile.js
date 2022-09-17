@@ -100,19 +100,18 @@ class Reference_Site extends Component{
                             actions={[
                                 {icon:()=>  <div>
                                               <label for="file-input"><CloudUpload/></label>
-                                              <input id="file-input" accept=".txt" hidden type="file" />
+                                              <input id="file-input" name= "ReferenceDataFile" accept=".xlsx" hidden type="file" onChange={this.props.handleFile} />
                                             </div>,
-
-                                    tooltip:"Import",
+                                    tooltip:"Import Data",
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
                                 {icon:()=>  <div>
-                                              <label for="file-input"><CloudDownload/></label>
-                                              <input id="file-input" accept=".txt" hidden type="file" />
+                                              <label for="download"><CloudDownload/></label>
+                                              <Button id ="download" variant="primary" hidden ></Button>
                                             </div>,
 
-                                    tooltip:"Import",
+                                    tooltip:"Download Data",
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
@@ -152,7 +151,7 @@ class Reference_Site extends Component{
                                           legends={[
                                                     {
                                                     anchor: 'bottom-left',
-                                                    direction: 'row',
+                                                    direction: 'column',
                                                     justify: false,
                                                     translateX: 10,
                                                     translateY: -10,
@@ -195,7 +194,7 @@ class Reference_Site extends Component{
                                           legends={[
                                                     {
                                                     anchor: 'bottom-left',
-                                                    direction: 'row',
+                                                    direction: 'column',
                                                     justify: false,
                                                     translateX: 10,
                                                     translateY: -10,
