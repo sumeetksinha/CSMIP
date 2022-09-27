@@ -95,7 +95,7 @@ class Application extends Component {
         this.setState({
             whether_analyzed : 1
         })
-        fetch('http://localhost:5000/Analyze',
+        fetch('/Analyze',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -139,7 +139,7 @@ class Application extends Component {
 
         this.setState({whether_analyzed : 1})
 
-        fetch('http://localhost:5000/Generate_FAS',
+        fetch('/Generate_FAS',
             {
                 method: 'POST',
                 mode: 'cors',
@@ -177,7 +177,7 @@ class Application extends Component {
         this.setState({
             whether_processed : 1
         })
-        fetch('http://localhost:5000/Generate_Motion',
+        fetch('/Generate_Motion',
             {
                 method: 'POST',
                 mode: 'cors',
