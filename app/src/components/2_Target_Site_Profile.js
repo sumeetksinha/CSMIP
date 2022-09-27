@@ -108,15 +108,15 @@ class Target_Site extends Component{
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
-                                // {icon:()=>  <div>
-                                //               <label for="file-input"><CloudDownload/></label>
-                                //               <input id="file-input" accept=".txt" hidden type="file" />
-                                //             </div>,
+                                {icon:()=>  <div>
+                                              <label for="download"><CloudDownload/></label>
+                                              <Button id ="download" name="ReferenceDataFile" variant="primary" hidden onClick={this.props.downloadSoilProfileData} ></Button>
+                                            </div>,
 
-                                //     tooltip:"Import",
-                                //     onclick:()=>alert("clicked"),
-                                //     isFreeAction:true,
-                                // },
+                                    tooltip:"Download Data",
+                                    onclick:()=>alert("clicked"),
+                                    isFreeAction:true,
+                                },
                                 ]}
 
                             options={{

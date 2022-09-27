@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Form, Button, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
+import { Form, Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import { ResponsiveLine } from '@nivo/line'
-import { ResponsiveBar } from "@nivo/bar";
+import Tooltip from "@material-ui/core/Tooltip";
+import { withStyles } from "@material-ui/core/styles";
 
 class Results extends Component{
 
@@ -17,8 +18,19 @@ class Results extends Component{
 
     render() {
 
-        const data = this.props.inputValues.Transfer_Functions
-        const ResultsFile= this.props.inputValues.Reference_Site_TF
+        const ResultsFile= this.props.inputValues.Motion
+
+        const styles = {
+                tooltip: {
+                    // width: "92px",
+                    // height: "36px",
+                    borderRadius: "18px",
+                    boxShadow: "0 20px 80px 0",
+                    backgroundColor: "green"
+                }
+            };
+
+        const CustomTooltip = withStyles(styles)(Tooltip);
 
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Results" transition={false}>
@@ -33,67 +45,110 @@ class Results extends Component{
                 <Row> 
                     <Col xs={8}>
                       <div style={{ height: "250px" }}>
-                        <ResponsiveLine
-                          data={data}
-                          margin={{ top: 10, right: 10, bottom: 70, left: 70 }}
-                          xScale={{ type: 'log', base: 10, max: 'auto' }}
-                          yScale={{ type: 'linear', min: "auto", max: 'auto' }}
-                          axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickRotation: 0,  tickValues: [0.01, 0.1, 1.0, 10]}}
-                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
-                          colors={{ scheme: 'category10' }}
-                          enablePoints={false}
-                          useMesh={true}
+                        <Tabs id="Results" defaultActiveKey="Input_Motion" transition={false} >
+                            <Tab eventKey="Transfer_Functions" title="Transfer Functions">
+                                <div style={{ height: 450 }}>
+                                    <ResponsiveLine
+                                      data={this.props.inputValues.Transfer_Functions}
+                                      margin={{ top: 50, right: 0, bottom: 50, left: 70 }}
+                                      xScale={{ type: 'log', base: 10, max: 'auto' }}
+                                      yScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                      axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickRotation: 0,  tickValues: [0.01, 0.1, 1.0, 10]}}
+                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                                      colors={{ scheme: 'category10' }}
+                                      enablePoints={false}
+                                      useMesh={true}
 
-                          legends={[
-                                            {
-                                            anchor: 'top-left',
-                                            direction: 'column',
-                                            justify: false,
-                                            translateX: 10,
-                                            translateY: -10,
-                                            itemsSpacing: 0,
-                                            itemDirection: 'left-to-right',
-                                            itemWidth: 80,
-                                            itemHeight: 20,
-                                            itemOpacity: 0.75,
-                                            symbolSize: 12,
-                                            symbolShape: 'circle',
-                                            symbolBorderColor: 'rgba(0, 0, 0, .5)',
-                                            effects: [
+                                      legends={[
                                                 {
-                                                    on: 'hover',
-                                                    style: {
-                                                        itemBackground: 'rgba(0, 0, 0, .03)',
-                                                        itemOpacity: 1
+                                                anchor: 'top-left',
+                                                direction: 'column',
+                                                justify: false,
+                                                translateX: 10,
+                                                translateY: -10,
+                                                itemsSpacing: 0,
+                                                itemDirection: 'left-to-right',
+                                                itemWidth: 80,
+                                                itemHeight: 20,
+                                                itemOpacity: 0.75,
+                                                symbolSize: 12,
+                                                symbolShape: 'circle',
+                                                symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                                effects: [
+                                                    {
+                                                        on: 'hover',
+                                                        style: {
+                                                            itemBackground: 'rgba(0, 0, 0, .03)',
+                                                            itemOpacity: 1
+                                                        }
                                                     }
-                                                }
-                                            ]
-                                        }
-                                    ]}
-                       />
-                      </div>
-                      <div style={{ height: "250px" }}>
+                                                ]
+                                            }
+                                        ]}
+                                   />
+                               </div>
+                            </Tab>
 
+                            <Tab eventKey="Input_Motion" title="Generate Input Motion">
+                                <p> </p>
+                                <Form.Group as={Row} controlId="Date" >
+                                  <Col xs={6}><CustomTooltip title="Select Ground Motion for the Reference site" placement="down" ><Form.Label> <h6>1) Select Ground Motion </h6></Form.Label></CustomTooltip></Col>
+                                  <Col xs={4}>
+                                      <Form.Control as="select" name= "Motion_File" defaultValue={this.props.inputValues.Motion_File} required onChange={this.props.handleChange}>
+                                        <option value="Chi_Chi_1999">Chi-Chi (1999)</option>
+                                        <option value="Kobe_1995">Kobe (1995)</option>
+                                      </Form.Control>
+                                  </Col>
+                                </Form.Group>
 
-       {/*                 <Form.Group as={Row} controlId="Date" >
-                          <Col xs={4}><Form.Label> <h6> Upload Ground Motion </h6> </Form.Label></Col>
-                          <Col xs={7.5}><Form.Control type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile} /></Col>
-                        </Form.Group>*/}
+                                <Form.Group as={Row} controlId="Date" >
+                                  <Col xs={6}><Form.Label> <h6>2) <font color="red">OR</font> Upload Motion File </h6> </Form.Label></Col>
+                                  <Col xs={4}><Form.Control type="file" name ="Motion_File" accept=".txt" onChange={this.props.handleFile} /></Col>
+                                </Form.Group>
 
-                        <ResponsiveLine
-                          data={data}
-                          margin={{ top: 10, right: 10, bottom: 70, left: 70 }}
-                          xScale={{ type: 'log', base: 10, max: 'auto' }}
-                          axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, tickRotation: 0, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
-                          axisTop={{ orient: 'top', tickSize: 5, tickValues: [0.01, 0.1, 1.0, 10]}}
-                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
-                          axisRight={{ orient: 'right', tickSize: 5,  tickRotation: 0}}
-                          colors={{ scheme: 'category10' }}
-                          enablePoints={false}
-                          useMesh={true}
-                       />
-                      </div>
+                                <div style={{ height: 300 }}>
+                                    <ResponsiveLine
+                                      data={this.props.inputValues.Motion}
+                                      margin={{ top: 10, right: 0, bottom: 50, left: 70 }}
+                                      xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                      yScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                      axisBottom={{ orient: 'bottom', tickSize: 5, tickPadding: 5, legend: 'Time (s)', legendOffset: 36, legendPosition: 'middle', tickRotation: 0}}
+                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Acceleration (g)', legendOffset: -60, legendPosition: 'middle',}}
+                                      // colors={{ scheme: 'category10' }}
+                                      enablePoints={false}
+                                      useMesh={true}
 
+                                      legends={[
+                                                {
+                                                anchor: 'bottom-right',
+                                                direction: 'row',
+                                                justify: false,
+                                                translateX: -50,
+                                                translateY: -10,
+                                                itemsSpacing: 0,
+                                                itemDirection: 'left-to-right',
+                                                itemWidth: 100,
+                                                itemHeight: 20,
+                                                itemOpacity: 0.75,
+                                                symbolSize: 12,
+                                                symbolShape: 'circle',
+                                                symbolBorderColor: 'rgba(0, 0, 0, .5)',
+                                                effects: [
+                                                    {
+                                                        on: 'hover',
+                                                        style: {
+                                                            itemBackground: 'rgba(0, 0, 0, .03)',
+                                                            itemOpacity: 1
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        ]}
+                                   />
+                               </div>
+                            </Tab>
+                        </Tabs>
+                    </div>
                   </Col>
 
                   <Col xs={4}>
@@ -187,11 +242,9 @@ class Results extends Component{
                   </Col>
                 </Row>
 
-
                 <p> </p>
                 <Button variant="secondary" onClick={this.back}>Back</Button>{' '}
-                <Button variant="primary"  href={`data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(ResultsFile))}`} download="AnalysisResults.json"> Download Input Motion </Button>{' '}
-                 {/* <Button variant="primary" type="Submit">Analyze</Button> */}
+                <Button variant="primary" onClick={this.props.downloadFile}> Download Input Motion </Button>
               </Form>
 
 

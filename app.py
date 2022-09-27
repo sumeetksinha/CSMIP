@@ -9,6 +9,9 @@ from operator import itemgetter
 import copy 
 import time 
 import pystrata
+# from   lib import processNGAfile
+from scipy.fft import fft, fftfreq, rfft, rfftfreq, ifft, irfft
+# import matplotlib.pyplot as plt
 
 app = Flask(__name__, static_folder='app/build', static_url_path="")
 # app = Flask(__name__)
@@ -168,8 +171,8 @@ def Generate_FAS():
 ###########################################################
 # Analyze the problem
 ###########################################################
-@app.route('/analyze', methods=['POST'])
-def login():
+@app.route('/Analyze', methods=['POST'])
+def Analyze():
 
     Target_Depth                = request.json["Target_Depth"];
     Reference_Site_Soil_Profile = request.json["Reference_Site_Soil_Profile"];
@@ -323,47 +326,69 @@ def login():
 
     return jsonify({'whether_analyzed': 2, 'Transfer_Functions': Transfer_Functions }), 200
 
-    # return jsonify({'whether_analyzed': 2}), 200
+###########################################################
+# Analyze the problem
+###########################################################
+@app.route('/Generate_Motion', methods=['POST'])
+def Generate_Motion():
 
-    # login_json = request.get_json()
+    print("I am ahere")
 
-    # if not login_json:
-    #     return jsonify({'msg': 'Missing JSON'}), 400
+    # Transfer Function form the analysis
+    ###########################################################################
+    TF_Data = request.json["Transfer_Functions"][2]["data"];
+    TF   = np.zeros(len(TF_Data))
+    Freq = np.zeros(len(TF_Data))
 
-    # username = login_json.get('username')
-    # password = login_json.get('password')
+    for i in range(len(TF_Data)):
+        TF[i] = TF_Data[i]["y"];
+        Freq[i] = TF_Data[i]["x"];
 
-    # if not username:
-    #     return jsonify({'msg': 'Username is missing'}), 400
+    # Input Motion form the user
+    ###########################################################################
+    Motion             = request.json["Motion"];
+    Ground_Motion_Data = request.json["Motion"][0]["data"];
 
-    # if not password:
-    #     return jsonify({'msg': 'Password is missing'}), 400
+    N = len(Ground_Motion_Data)
+    Ground_Motion_Time = np.zeros(N);
+    Ground_Motion_Acc  = np.zeros(N);
 
-    # user_password = users_passwords.get(username)
+    for i in range(N):
+        Ground_Motion_Time[i] = Ground_Motion_Data[i]["x"];
+        Ground_Motion_Acc[i]  = Ground_Motion_Data[i]["y"];
 
-    # if not user_password or password != user_password:
-    #     return jsonify({'msg': 'Bad username or password'}), 401
+    dt = Ground_Motion_Time[1]-Ground_Motion_Time[0];
 
-    # access_token = create_access_token(identity=username)
+    # Apply Tranfer Function to the Ground Motion
+    ###########################################################################
+    xf = rfftfreq(N,dt)
+    ground_motion_yf  = rfft(Ground_Motion_Acc);
+    input_motion_yf   = copy.deepcopy(ground_motion_yf)*np.interp(xf,Freq,TF);
+    Input_Motion_Acc  = irfft(input_motion_yf)
 
-    # return jsonify({'access_token': access_token}), 200
+    # Sending data to the app
+    ###########################################################################
+    Input_Motion_Data  = copy.deepcopy(Ground_Motion_Data);
+    for i in range(N):
+        Input_Motion_Data[i]["y"] = copy.deepcopy(Input_Motion_Acc[i])
+
+    Motion[0]["data"] = copy.deepcopy(Ground_Motion_Data);
+    Motion[1]["data"] = copy.deepcopy(Input_Motion_Data);
+
+    # print(Motion[0]["data"][:10])
+    # print(Motion[1]["data"][:10])
+
+    # plt.figure()
+    # plt.plot(Ground_Motion_Time,Ground_Motion_Acc)
+    # plt.plot(Ground_Motion_Time,Input_Motion_Acc)
+    # plt.savefig("Plot.png")
 
 
-# @app.route('/api/protected', methods=['GET'])
-# @jwt_required
-# def protected():
-#     claims = get_jwt_claims()
-#     if claims.get('username') == 'admin':
-#         return jsonify({'data': ['hi', 'it', 'works']}), 200
-#     return jsonify({'msg': 'No access for you!'}), 400
+    return jsonify({'whether_processed': 2, 'Motion': Motion }), 200
 
-
-# if __name__ == '__main__':
-#     app.jinja_env.auto_reload = True
-#     app.config['TEMPLATES_AUTO_RELOAD'] = True
-#     app.run(debug=True, host='0.0.0.0')
-
-
+###########################################################
+# Show the build webpage
+###########################################################
 @app.route('/api',methods=["GET"])
 @cross_origin()
 def index():
@@ -371,6 +396,9 @@ def index():
     "tuorial":"Flask React Heroku"
     }
 
+###########################################################
+# Index html serve
+###########################################################
 @app.route('/')
 def serve():
     return send_from_directory(app.static_folder,"index.html")

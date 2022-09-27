@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Form, Button, Col, Row, Container, Tabs, Tab, Spinner} from 'react-bootstrap';
+import { Form, Button, Col, Row, Tabs, Tab, Spinner} from 'react-bootstrap';
 import { ResponsiveLine } from '@nivo/line'
-import { ResponsiveBar } from "@nivo/bar";
-import Tooltip, { TooltipProps }from "@material-ui/core/Tooltip";
+import Tooltip from "@material-ui/core/Tooltip";
 import { withStyles } from "@material-ui/core/styles";
 
 
@@ -197,10 +196,5 @@ class Ground_Motion extends Component{
         );
     }
 }
-
-{/* <Button variant="secondary" onClick={this.back}>Back</Button>{' '}
-{whether_analyzed ? (<Button variant="primary" type="Submit"><Spinner as="span" animation="grow" size="sm" animation="border"/> Analyze</Button>) : 
-  (<Button variant="primary" type="Submit">Analyze</Button>)
-} */}
 
 export default Ground_Motion;

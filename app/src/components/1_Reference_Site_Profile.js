@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Form, Button, Card, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
+import {Form, Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
 import {AddBox, ArrowDownward, ArrowUpward, CloudUpload, CloudDownload } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import { ResponsiveLine } from '@nivo/line';
@@ -106,15 +106,15 @@ class Reference_Site extends Component{
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
-                                // {icon:()=>  <div>
-                                //               <label for="download"><CloudDownload/></label>
-                                //               <Button id ="download" name="ReferenceDataFile" variant="primary" hidden onClick={this.props.downloadSoilProfileData} ></Button>
-                                //             </div>,
+                                {icon:()=>  <div>
+                                              <label for="download"><CloudDownload/></label>
+                                              <Button id ="download" name="ReferenceDataFile" variant="primary" hidden onClick={this.props.downloadSoilProfileData} ></Button>
+                                            </div>,
 
-                                //     tooltip:"Download Data",
-                                //     onclick:()=>alert("clicked"),
-                                //     isFreeAction:true,
-                                // },
+                                    tooltip:"Download Data",
+                                    onclick:()=>alert("clicked"),
+                                    isFreeAction:true,
+                                },
                                 ]}
 
                             options={{
