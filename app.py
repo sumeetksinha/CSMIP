@@ -133,20 +133,23 @@ def CreateInputFileForAnalysis(SampleJasonFile,InputParameters):
 
     return UniqFileName
 
-
+###########################################################
+# Generate FAS from Source_RVT_Theory_Motion
+###########################################################
 @app.route('/Generate_FAS', methods=['POST'])
 def Generate_FAS():
-
-    # print("Sumeet")
-    # print(request.json)
 
     Magnitude= float(request.json["Magnitude"]);
     Distance = float(request.json["Distance"]);
     Region  = request.json["Region"];
     FAS     = request.json["FAS"];
+    Npoints = 2**14 
+
+    freqs = np.linspace(0, 1/(2*0.005), int(Npoints/2)+1)[:-1];
+    freqs[0] = .01
 
     m = pystrata.motion.SourceTheoryRvtMotion(magnitude=Magnitude, distance=Distance, region=Region)
-    m.calc_fourier_amps()
+    m.calc_fourier_amps(freqs=freqs)
 
     FAS_Data_Array  = [];
     Freq = m.freqs;
@@ -159,87 +162,168 @@ def Generate_FAS():
         FAS_Data_Array.append(FAS_Data_Points);
 
     FAS[0]["data"]=FAS_Data_Array;
-
-
     return jsonify({'whether_analyzed': 2, 'FAS': FAS }), 200
 
 
-
-    # print(Depth_of_Interest)
-
-
+###########################################################
+# Analyze the problem
+###########################################################
 @app.route('/analyze', methods=['POST'])
 def login():
 
-    print("Sumeet")
-    # print(request.json)
-
-    Depth_of_Interest           = request.json["Depth_of_Interest"];
+    Target_Depth                = request.json["Target_Depth"];
     Reference_Site_Soil_Profile = request.json["Reference_Site_Soil_Profile"];
     Target_Site_Soil_Profile    = request.json["Target_Site_Soil_Profile"];
+    FAS_Data                    = request.json["FAS"][0]["data"];
+    Transfer_Functions          = request.json["Transfer_Functions"];
 
-    New_Target_Site_Soil_Profile = [];
+    Mod_Target_Site_Soil_Profile    = [];
+    Mod_Reference_Site_Soil_Profile = (Reference_Site_Soil_Profile).copy();
 
-    depth = 0; layer_num=1;
+    Bedrock_Layer_Index   = -1;
+    Reference_Layer_Index = 0;
+    Target_Layer_Index    = 0;
+
+    depth = 0; prev_depth=0; layer_num=1;
     for i in range(0,len(Target_Site_Soil_Profile)):
+        prev_depth = depth
         depth = depth+Target_Site_Soil_Profile[i]["Thickness"];
-        if(depth>0):
-            new_layer = Target_Site_Soil_Profile[i];
-            new_layer["thickness"] = (depth-Depth_of_Interest);
-            new_layer["thickness"] = (depth-Depth_of_Interest);
-            depth = Depth_of_Interest;
+        if(prev_depth<Target_Depth and depth>Target_Depth):
+            new_layer              = (Target_Site_Soil_Profile[i]).copy();
+            new_layer["Thickness"] = (Target_Depth-prev_depth);
+            Mod_Target_Site_Soil_Profile.append(new_layer);
+
+            another_layer              = (Target_Site_Soil_Profile[i]).copy();
+            another_layer["Thickness"] = (depth-Target_Depth);            
+            Mod_Target_Site_Soil_Profile.append(another_layer);
+        else:
+            Mod_Target_Site_Soil_Profile.append(Target_Site_Soil_Profile[i]);
+
+    # make the bedrock layer of the soil profile to have zero thickness
+    Reference_Bedrock = Reference_Site_Soil_Profile[-1].copy();
+    Reference_Bedrock["Thickness"] = 0;
+    Mod_Reference_Site_Soil_Profile.append(Reference_Bedrock);
+
+    Target_Bedrock = Target_Site_Soil_Profile[-1].copy();
+    Target_Bedrock["Thickness"] = 0;
+    Mod_Target_Site_Soil_Profile.append(Target_Bedrock);
+
+    # Initialize the Reference Profile
+    Pystrata_Reference_Soil_Profile_Layers = [];
+    for i in range(len(Mod_Reference_Site_Soil_Profile)):
+        Name      =Mod_Reference_Site_Soil_Profile[i]["Name"];
+        Thickness =Mod_Reference_Site_Soil_Profile[i]["Thickness"];
+        Vs        =Mod_Reference_Site_Soil_Profile[i]["Vs"];
+        Gamma     =Mod_Reference_Site_Soil_Profile[i]["Gamma"];
+        Damping   =Mod_Reference_Site_Soil_Profile[i]["Damping"];
+        Soil_Model=Mod_Reference_Site_Soil_Profile[i]["Soil_Model"];
+        Pystrata_Reference_Soil_Profile_Layers.append(pystrata.site.Layer(soil_type=pystrata.site.SoilType(name=Name,unit_wt=Gamma, mod_reduc=None, damping=Damping), thickness=Thickness, shear_vel=Vs),)
+    Pystrata_Reference_Soil_Profile = pystrata.site.Profile(layers= Pystrata_Reference_Soil_Profile_Layers)
+
+    # Initialize the Target Profile
+    Target_Layer_Index = 0; depth =0;
+    Pystrata_Target_Soil_Profile_Layers = [];
+    for i in range(len(Mod_Target_Site_Soil_Profile)):
+        Name      =Mod_Target_Site_Soil_Profile[i]["Name"];
+        Thickness =Mod_Target_Site_Soil_Profile[i]["Thickness"];
+        Vs        =Mod_Target_Site_Soil_Profile[i]["Vs"];
+        Gamma     =Mod_Target_Site_Soil_Profile[i]["Gamma"];
+        Damping   =Mod_Target_Site_Soil_Profile[i]["Damping"];
+        Soil_Model=Mod_Target_Site_Soil_Profile[i]["Soil_Model"];
+        depth     = depth + Thickness;
+        if(depth==Target_Depth):
+            Target_Layer_Index=i+1;
+        Pystrata_Target_Soil_Profile_Layers.append(pystrata.site.Layer(soil_type=pystrata.site.SoilType(name=Name,unit_wt=Gamma, mod_reduc=None, damping=Damping), thickness=Thickness, shear_vel=Vs),)
+    Pystrata_Target_Soil_Profile = pystrata.site.Profile(layers= Pystrata_Target_Soil_Profile_Layers)
+
+    ###########################################################################
+    # SRA
+    ###########################################################################
+    n = len(FAS_Data); Freq=np.zeros(n); FAS_A =np.zeros(n); 
+    for i in range(n):
+        Freq[i] = FAS_Data[i]["x"];
+        FAS_A[i]  = FAS_Data[i]["y"];
+
+    m = pystrata.motion.RvtMotion(Freq,FAS_A);
+
+    ###########################################################################
+    # Key locations
+    ###########################################################################
+    Bedrock_Layer_Index;   # Input motion, both sites (point A)
+    Reference_Layer_Index; # Top of surface, reference site (point B)
+    Target_Layer_Index;    # Target depth (point C)
+
+    ###########################################################################
+    # Calculators
+    ###########################################################################
+    calc_reference = pystrata.propagation.LinearElasticCalculator()
+    calc_target    = pystrata.propagation.LinearElasticCalculator()
+
+    # Outputs
+    ###########################################################################
+    outputs_reference = pystrata.output.OutputCollection([
+        pystrata.output.FourierAmplitudeSpectrumOutput(
+        Freq,
+        pystrata.output.OutputLocation('outcrop', index = Reference_Layer_Index),
+        ),
+        ])
+
+    outputs_target = pystrata.output.OutputCollection([
+        pystrata.output.FourierAmplitudeSpectrumOutput(
+        Freq,
+        pystrata.output.OutputLocation('outcrop', index = Target_Layer_Index),
+        ),
+        ])
+
+    # SRA
+    ###########################################################################
+    calc_reference(m,Pystrata_Reference_Soil_Profile,Pystrata_Reference_Soil_Profile.location('outcrop', index=Bedrock_Layer_Index))
+    outputs_reference(calc_reference)
+
+    calc_target(m,Pystrata_Target_Soil_Profile,Pystrata_Target_Soil_Profile.location('outcrop', index=Bedrock_Layer_Index))
+    outputs_target(calc_target)
+
+    # Double convolution transfer function
+    ###########################################################################
+    FAS_B = outputs_reference[0].values
+    FAS_C = outputs_target[0].values
+
+    TF1 = FAS_A/FAS_B
+    TF2 = FAS_C/FAS_A
+    TF  = TF1*TF2
+
+    # Sending data to the app
+    ###########################################################################
+    Reference_Site_TF_Data_Array           = [];
+    Target_Site_TF_Data_Array              = [];
+    Reference_to_Target_Site_TF_Data_Array = [];
+
+    for i in range(len(Freq)):
+
+        Reference_Site_TF_Data_Points = {};
+        Reference_Site_TF_Data_Points["x"] = Freq[i];
+        Reference_Site_TF_Data_Points["y"] = TF1[i];
+        Reference_Site_TF_Data_Array.append(Reference_Site_TF_Data_Points);
 
 
-    print(Depth_of_Interest)
+        Target_Site_TF_Data_Points = {};
+        Target_Site_TF_Data_Points["x"] = Freq[i];
+        Target_Site_TF_Data_Points["y"] = TF2[i];
+        Target_Site_TF_Data_Array.append(Target_Site_TF_Data_Points);
 
-    # print("Sumeet")
-    # print(request.json) # get the request,json from frontend
-    # print(os.getcwd()) # get current working dierctory
 
-    # read the sample jason file and create a new input file
-    UniqFileName = CreateInputFileForAnalysis("Sample_Input.json",request.json)   
-    # UniqFileName = "Sample_Input.json"
-    # command = "\"C:\Program Files (x86)\Strata 1.0.0\strata.exe\" -b " +  UniqFileName
-    command = "\"/mnt/c/Program Files (x86)/Strata 1.0.0\" -b " +  UniqFileName
+        Reference_to_Target_Site_TF_Data_Points = {};
+        Reference_to_Target_Site_TF_Data_Points["x"] = Freq[i];
+        Reference_to_Target_Site_TF_Data_Points["y"] = TF[i];
+        Reference_to_Target_Site_TF_Data_Array.append(Reference_to_Target_Site_TF_Data_Points);
 
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-    process.wait()
-    # print (process.returncode)
+    Transfer_Functions[0]["data"] =Reference_Site_TF_Data_Array;
+    Transfer_Functions[1]["data"] =Target_Site_TF_Data_Array;
+    Transfer_Functions[2]["data"] =Reference_to_Target_Site_TF_Data_Array;
 
-    # read the json output file 
-    Fjson = open(UniqFileName,)
-    # returns JSON object as a dictionary
-    data = json.load(Fjson)
-    # print(data)
-    hasResults = data["hasResults"]
+    return jsonify({'whether_analyzed': 2, 'Transfer_Functions': Transfer_Functions }), 200
 
-    if(hasResults):
-        Output_maxFreq = data["outputCatalog"]["frequency"]['max']
-        Output_minFreq = data["outputCatalog"]["frequency"]['min']
-        Output_sizeFreq = data["outputCatalog"]["frequency"]['size']
-        Output_Freq     = np.linspace(np.log10(Output_minFreq),np.log10(Output_maxFreq),Output_sizeFreq)
-        Output_Freq     = np.power(10,Output_Freq)
-
-        Output_maxPeriod = data["outputCatalog"]["period"]['max']
-        Output_minPeriod = data["outputCatalog"]["period"]['min']
-        Output_sizePeriod = data["outputCatalog"]["period"]['size']
-        Output_Period     = np.linspace(np.log10(Output_minPeriod),np.log10(Output_maxPeriod),Output_sizePeriod)
-        Output_Period     = np.power(10,Output_Period)
-
-        # read AccelTransferFunctionOutput at the given depth 
-        AccelTransferFunctionOutput = data["outputCatalog"]["ratiosOutputCatalog"][0]["data"][0][0]
-        # print(AccelTransferFunctionOutput)
-        AccelTransferFunctionOutput_List = []
-
-        for i in range(len(AccelTransferFunctionOutput)):
-            AccelTransferFunctionOutput_List.append({"x":Output_Freq[i],"y":AccelTransferFunctionOutput[i]})
-
-        AccelTransferFunctionOutput = [{"id": "AccelTransferFunctionOutput",
-                                        "data":AccelTransferFunctionOutput_List
-                                    },]
-
-    # return jsonify({'whether_analyzed': 2, "AccelTransferFunctionOutput":AccelTransferFunctionOutput , "ResultsFile":data}), 200
-    return jsonify({'whether_analyzed': 2}), 200
+    # return jsonify({'whether_analyzed': 2}), 200
 
     # login_json = request.get_json()
 

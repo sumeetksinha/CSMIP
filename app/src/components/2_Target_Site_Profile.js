@@ -108,15 +108,15 @@ class Target_Site extends Component{
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
-                                {icon:()=>  <div>
-                                              <label for="file-input"><CloudDownload/></label>
-                                              <input id="file-input" accept=".txt" hidden type="file" />
-                                            </div>,
+                                // {icon:()=>  <div>
+                                //               <label for="file-input"><CloudDownload/></label>
+                                //               <input id="file-input" accept=".txt" hidden type="file" />
+                                //             </div>,
 
-                                    tooltip:"Import",
-                                    onclick:()=>alert("clicked"),
-                                    isFreeAction:true,
-                                },
+                                //     tooltip:"Import",
+                                //     onclick:()=>alert("clicked"),
+                                //     isFreeAction:true,
+                                // },
                                 ]}
 
                             options={{
@@ -237,7 +237,7 @@ class Target_Site extends Component{
           
             </Tab>
             <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
-            <Tab eventKey="Analyze" title="Analysis" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
             <Tab eventKey="Results" title="Results" disabled/>
         </Tabs>
         );

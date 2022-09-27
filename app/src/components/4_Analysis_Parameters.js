@@ -38,19 +38,19 @@ class Analysis_Settings extends Component{
       const CustomTooltip = withStyles(styles)(Tooltip);
 
       return( 
-        <Tabs id="CSMIP_Tabs" activeKey="Analysis_Settings" transition={false}>
+        <Tabs id="CSMIP_Tabs" activeKey="Analysis_Parameters" transition={false}>
           <Tab eventKey="Reference_Site" title="Reference Site" disabled />
           <Tab eventKey="Target_Site" title="Target Site" disabled/>
           <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
 
-            <Tab eventKey="Analysis_Settings" title="Analysis Settings" >
+            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters">
             <p></p>
             <Form validated onSubmit={this.saveAndContinue} validated >
 
               <Row> 
                 <Col xs={8}>
 
-                  <h6>Calculation Parameters</h6>
+                  <h6>Analysis Parameters</h6>
                   <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
                     <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Error tolerance is the limit at which the iterative process will terminate. "placement="right" ><Form.Label> &nbsp;&nbsp; Error Tolerance (%) </Form.Label></CustomTooltip></Col>
                     <Col sm={{ span: 4, offset: 0 }}><Form.Control type="text" name = "Tol" defaultValue={this.props.inputValues.Tol} required onChange={this.props.handleChange}/></Col>

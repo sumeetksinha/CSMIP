@@ -6,8 +6,6 @@ import Tooltip, { TooltipProps }from "@material-ui/core/Tooltip";
 import { withStyles } from "@material-ui/core/styles";
 
 
-
-
 class Ground_Motion extends Component{
 
     back  = (e) => {
@@ -193,7 +191,7 @@ class Ground_Motion extends Component{
                 <Button variant="primary" type="submit">Next</Button>
               </Form>
             </Tab>
-            <Tab eventKey="Analyze" title="Analysis" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
             <Tab eventKey="Results" title="Results" disabled/>
           </Tabs>
         );

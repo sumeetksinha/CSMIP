@@ -106,15 +106,15 @@ class Reference_Site extends Component{
                                     onclick:()=>alert("clicked"),
                                     isFreeAction:true,
                                 },
-                                {icon:()=>  <div>
-                                              <label for="download"><CloudDownload/></label>
-                                              <Button id ="download" variant="primary" hidden ></Button>
-                                            </div>,
+                                // {icon:()=>  <div>
+                                //               <label for="download"><CloudDownload/></label>
+                                //               <Button id ="download" name="ReferenceDataFile" variant="primary" hidden onClick={this.props.downloadSoilProfileData} ></Button>
+                                //             </div>,
 
-                                    tooltip:"Download Data",
-                                    onclick:()=>alert("clicked"),
-                                    isFreeAction:true,
-                                },
+                                //     tooltip:"Download Data",
+                                //     onclick:()=>alert("clicked"),
+                                //     isFreeAction:true,
+                                // },
                                 ]}
 
                             options={{
@@ -183,7 +183,7 @@ class Reference_Site extends Component{
                                         <ResponsiveLine
                                           data={this.props.inputValues.Site_Damping_Profile}
                                           margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
-                                          xScale={{ type: 'linear', min:0,  max: 1.0 }}
+                                          xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                           yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
                                           axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
                                           axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
@@ -231,7 +231,7 @@ class Reference_Site extends Component{
             </Tab>
             <Tab eventKey="Target_Site" title="Target Site" disabled/>
             <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
-            <Tab eventKey="Analyze" title="Analysis" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
             <Tab eventKey="Results" title="Results" disabled/>
         </Tabs>
         );
