@@ -124,7 +124,7 @@ class Analysis_Settings extends Component{
                                 <ResponsiveLine
                                   data={this.props.inputValues.Site_Damping_Profile}
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
-                                  xScale={{ type: 'linear', min:0,  max: 1.0 }}
+                                  xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
                                   axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}

@@ -211,11 +211,18 @@ class Application extends Component {
         const inputName  = event.target.name;
         const inputValue = event.target.value;
 
-        // run the validation here 
         this.setState({[inputName]:inputValue});
 
         if(inputName=="Target_Depth"){
+            this.setState({[inputName]: parseFloat(inputValue)});
             this.update_Target_Depth_Plots(inputValue)
+        }
+        else if(inputName=="Magnitude" || inputName=="Distance" || inputName=="Tol" || inputName=="MaxIter" || inputName=="EffStrain" || inputName=="MaxFreq" || inputName=="WavFrac"){
+            this.setState({[inputName]: parseFloat(inputValue)});
+        }
+        else{
+            // run the validation here 
+            this.setState({[inputName]:inputValue});
         }
 
         if(inputName=="Motion_File"){
@@ -229,6 +236,8 @@ class Application extends Component {
 
             this.Generate_Motion();
         }
+
+        console.log(this.state)
 
     }
 
@@ -447,13 +456,16 @@ class Application extends Component {
 
         const Site_Vs_Profile_Data      = this.state.Site_Vs_Profile;
         const Site_Damping_Profile_Data = this.state.Site_Damping_Profile;
-        const Vs_Profile_Data = Site_Vs_Profile_Data[0].data.concat(Site_Vs_Profile_Data[1].data)
 
+        const Vs_Profile_Data = Site_Vs_Profile_Data[0].data.concat(Site_Vs_Profile_Data[1].data)
         var maxValue = Math.max.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
         var minValue = Math.min.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
-
         var Target_Depth_Vs_Data  = [{"x":minValue,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
-        var Target_Depth_Damping_Data  = [{"x":0,"y":Target_Depth},{"x":1.0,"y":Target_Depth}];
+
+        const Damping_Profile_Data = Site_Damping_Profile_Data[0].data.concat(Site_Damping_Profile_Data[1].data)
+        var maxValue = Math.max.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
+        var minValue = Math.min.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
+        var Target_Depth_Damping_Data  = [{"x":minValue,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
 
         // update Vs and Damping profile arrays
         Site_Vs_Profile_Data[2].data = Target_Depth_Vs_Data;
