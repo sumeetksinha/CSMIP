@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Application from "./components/0_Application";
 import './App.css';
 import Illustration from './Profile_Pic.png';
-import { usePython } from "react-py";
 // import { PythonProvider } from "react-py";
 
 // function Codeblock() {

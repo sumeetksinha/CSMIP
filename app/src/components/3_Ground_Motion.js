@@ -45,16 +45,9 @@ class Ground_Motion extends Component{
               <Form  onSubmit={this.saveAndContinue} validated>
                 <Row> 
                   <Col xs={8}>
-                    <h6>1) Enter Earthquake Source Information {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="grow" size="sm" animation="border"/> Generate</Button>) : 
-                (<Button variant="primary" onClick={this.props.Generate_FAS} >Generate</Button>)
-              }
-
-
-
-{/*<Button className="align-self-center " variant="primary" style={{  alignItems:"center", height: "50%", marginTop: -5 }} onClick={this.props.Generate_FAS}> Generate</Button> 
-*/}</h6> 
+                    <h6>1) Earthquake Source Information </h6> 
                     <Form.Group className="mb-2" as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                      <Col xs={2.5}><CustomTooltip title="Earthquake Magnitue" placement="down" ><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (Mw) </Form.Label></CustomTooltip></Col>
+                      <Col xs={2.5}><CustomTooltip title="Earthquake Magnitue" placement="down" ><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (M<sub>w</sub>) </Form.Label></CustomTooltip></Col>
                       <Col xs={2}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
 
                       <Col xs={2.5}><CustomTooltip title="Distance of target site from earthquake source" placement="down" ><Form.Label>Distance (km) </Form.Label></CustomTooltip></Col>
@@ -72,10 +65,19 @@ class Ground_Motion extends Component{
 
                     <p></p>
 
-                    <Form.Group as={Row} controlId="Date" >
-                      <Col xs={6}><Form.Label> <h6>2) <font color="red">OR</font> Upload Frequency Amplitude Spectrum </h6> </Form.Label></Col>
-                      <Col xs={4}><Form.Control type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile} /></Col>
-                    </Form.Group>
+                    <Form inline>
+                        <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
+                            <Col xs={13}><Form.Label> <h6> &nbsp;&nbsp; 2) Frequency Amplitude Spectrum 
+                            &nbsp;&nbsp; {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="grow" size="sm" animation="border"/> Generate</Button>) : 
+                                        (<Button variant="primary" onClick={this.props.Generate_FAS} >Generate</Button>) }</h6></Form.Label>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
+                            <Col xs={4}><Form.Label> <h6><font color="red"> &nbsp;&nbsp;&nbsp;&nbsp; OR </font> </h6> </Form.Label></Col>
+                            <Col xs={8}><Form.Control  type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile}/></Col>
+                        </Form.Group>
+                    </Form>
+                    <p></p> 
 
                     <div style={{ height: "350px" }}>
                       <ResponsiveLine
@@ -83,10 +85,10 @@ class Ground_Motion extends Component{
                         margin={{ top: 0, right: 0, bottom: 50, left: 70 }}
                         xScale={{ type: 'log', base: 10, max: 'auto' }}
                         // yScale={{ type: 'log', base: 10, min:0.0001, max: 1 }}
-                        axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: 0, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
+                        axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
                         // axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickValues: [0.0001, 0.001, 0.01, 0.1, 1.0, 10],  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
-                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
-                        colors={{ scheme: 'category10' }}
+                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        colors={{ datum: 'color' }}
                         enablePoints={false}
                         useMesh={true}
                      />
@@ -96,16 +98,16 @@ class Ground_Motion extends Component{
 
                   <Col xs={4}>
                     <Tabs id="Profiles" defaultActiveKey="Vs_Profile" transition={false} >
-                        <Tab eventKey="Vs_Profile" title="Shear Wave Velocity">
-                            <div style={{ height: 450 }}>
+                        <Tab eventKey="Vs_Profile" title="Vs">
+                            <div style={{ height: 550 }}>
                                 <ResponsiveLine
                                   data={this.props.inputValues.Site_Vs_Profile}
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
-                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
-                                  colors={{ scheme: 'category10' }}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                  colors={{ datum: 'color' }}
                                   enablePoints={false}
                                   useMesh={true}
 
@@ -140,15 +142,15 @@ class Ground_Motion extends Component{
                         </Tab>
 
                         <Tab eventKey="Damping_Profile" title="Damping">
-                            <div style={{ height: 450 }}>
+                            <div style={{ height: 550 }}>
                                 <ResponsiveLine
                                   data={this.props.inputValues.Site_Damping_Profile}
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
-                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
-                                  colors={{ scheme: 'category10' }}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                  colors={{ datum: 'color' }}
                                   enablePoints={false}
                                   useMesh={true}
 

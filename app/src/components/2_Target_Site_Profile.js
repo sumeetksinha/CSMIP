@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import {Form, Button, Card, Col, Row, Container, Tabs, Tab } from 'react-bootstrap';
-import {AddBox, ArrowDownward, ArrowUpward, CloudUpload, CloudDownload } from "@material-ui/icons";
+import {Form, Button, Col, Row, Tabs, Tab } from 'react-bootstrap';
+import {CloudUpload, CloudDownload } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import { ResponsiveLine } from '@nivo/line'
-
+import Tooltip from "@material-ui/core/Tooltip";
+import { withStyles } from "@material-ui/core/styles";
 
 class Target_Site extends Component{
 
@@ -19,13 +20,27 @@ class Target_Site extends Component{
 
     render() {
 
-        const Soil_Profile_Table = [   { title: "Name", field: "Name", type:"string", align:"center", editable: 'never'},
-                                           { title: "Thickness (m)", field: "Thickness", type:"numeric", align:"center", validate: rowData => rowData.Thickness > 0},
-                                           { title: "Vs (m/s)", field: "Vs" , type:"numeric", align:"center", validate: rowData => rowData.Vs > 0},
-                                           { title: "Unit Weight (kN/m^3)", field: "Gamma", type: "numeric", align:"center", validate: rowData => rowData.Gamma > 0},
-                                           { title: "Damping (%)", field: "Damping", type: "numeric", align:"center", validate: rowData => (rowData.Damping <=100 && rowData.Damping >=0)},
-                                           { title: "Soil Model", field: "Soil_Model", lookup: { 1: 'EPRI (93), PI=10', 2: 'Seed & Idriss, Sand Mean', 3: 'None' }, align:"center", validate: rowData => rowData.Soil_Model >0}
+        const Soil_Profile_Table = [   { title: "Layer", field: "Name", type:"string", align:"center", editable: 'never'},
+                                           { title: "H (m)", field: "Thickness", type:"numeric", align:"center", initialEditValue:5, validate: rowData => rowData.Thickness > 0},
+                                           { title: <h7>V<sub>s </sub>(m/s)</h7>, field: "Vs" , type:"numeric", align:"center", initialEditValue:100, validate: rowData => rowData.Vs > 0},
+                                           { title: <h7>γ<sub>sat </sub>(kN/m<sup>3</sup>)</h7>, field: "Gamma", type: "numeric", align:"center", initialEditValue:20, validate: rowData => rowData.Gamma > 0},
+                                           { title: "PI", field: "PI", type: "numeric", align:"center", initialEditValue:0, validate: rowData => rowData.PI >= 0},
+                                           { title: "OCR", field: "OCR", type: "numeric", align:"center", initialEditValue:1, validate: rowData => rowData.OCR >= 1},
+                                           { title: "Damping (%)", field: "Damping", type: "numeric", align:"center", initialEditValue:0.02, validate: rowData => (rowData.Damping <=1 && rowData.Damping >=0)},
+                                           { title: "Soil Model", field: "SoilModel", lookup: { 1: 'Elastic', 2: 'Darendeli', 3: 'VC' }, align:"center", initialEditValue:1, validate: rowData => rowData.SoilModel >0}
                                        ];
+
+        const styles = {
+                tooltip: {
+                    // width: "92px",
+                    // height: "36px",
+                    borderRadius: "18px",
+                    boxShadow: "0 20px 80px 0",
+                    backgroundColor: "green"
+                }
+            };
+
+        const CustomTooltip = withStyles(styles)(Tooltip);
 
         return( 
 
@@ -35,32 +50,33 @@ class Target_Site extends Component{
                 <p></p>
                 <Form onSubmit={this.saveAndContinue} validated>
                     <Row> <Col xs={8}>
+                        <Row>
                         <MaterialTable
-                            title= "Soil Profile"
-                            style={{ height: "100%" }}
+                            title= "1) Soil Profile"
+                            style={{ height: "80%" }}
                             columns={Soil_Profile_Table}
                             data={this.props.inputValues.Target_Site_Soil_Profile}
 
                             editable={{ 
-                                // isEditHidden: rowData => (rowData.Name === 'Bedrock' || rowData.Name === 'Layer 1'),
-                                isDeleteHidden: rowData => (rowData.Name === 'Bedrock' || rowData.Name === 'Layer 1'),
+                                isDeleteHidden: rowData => (rowData.Name === '1'),
                                 
                                 onRowAdd: newData =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
-                                        const Layer_1 = data.slice(0,1);
-                                        const Bedrock = data.slice(-1);
-                                        const OtherLayers = data.slice(1,-1);
+                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
+                                        const OtherLayers = data.slice(0,data.Length);
                                         newData.Thickness=parseFloat(newData.Thickness);
                                         newData.Vs=parseFloat(newData.Vs);
                                         newData.Gamma=parseFloat(newData.Gamma);
                                         newData.Damping=parseFloat(newData.Damping);
-                                        // console.log(Layer_1)
-                                        // console.log(Bedrock)
-                                        // console.log("I am here")
-                                        newData.Name = "Layer " + (data.length)
-                                        this.props.updateSoilLayers([...Layer_1, ...OtherLayers, newData, ...Bedrock])
+                                        newData.PI=parseFloat(newData.PI);
+                                        newData.OCR=parseFloat(newData.OCR);
+                                        newData.SoilModel=parseFloat(newData.SoilModel);
+                                        // console.log(OtherLayers)
+                                        // console.log(newData)
+                                        // // console.log("I am here")
+                                        newData.Name = (data.length)+1
+                                        this.props.updateSoilLayers([...OtherLayers, newData])
                                         resolve();
                                         }, 10)
                                 }),
@@ -68,14 +84,18 @@ class Target_Site extends Component{
                                 onRowUpdate: (newData, oldData) =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
+                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
                                         const dataUpdate = [...data];
                                         const index = oldData.tableData.id;
                                         newData.Thickness=parseFloat(newData.Thickness)
                                         newData.Vs=parseFloat(newData.Vs)
                                         newData.Gamma=parseFloat(newData.Gamma)
                                         newData.Damping=parseFloat(newData.Damping)
+                                        newData.PI=parseFloat(newData.PI);
+                                        newData.OCR=parseFloat(newData.OCR);
+                                        newData.SoilModel=parseFloat(newData.SoilModel);
                                         dataUpdate[index] = newData;
+                                        // console.log(newData)
                                         this.props.updateSoilLayers([...dataUpdate]);
                                         resolve();
                                         }, 10)
@@ -84,7 +104,7 @@ class Target_Site extends Component{
                                 onRowDelete: oldData =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
+                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
                                         const dataDelete = [...data];
                                         const index = oldData.tableData.id;
                                         dataDelete.splice(index, 1);
@@ -131,23 +151,43 @@ class Target_Site extends Component{
                                         left: 0, 
                                         right: 0
                                       },
-                                exportButton: false
+                                exportButton: false,
+                                maxBodyHeight: 400,
+                                pageSizeOptions: [5, 10, 100, 1000]
                             }}
                             
                         />
+                        </Row>
+                        <Row>
+                            <div>
+                                <br/>
+                                <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
+                                    <Col xs={4}><Form.Label> <h6> 2) Water Table Depth (m)</h6> </Form.Label></Col>
+                                    <Col xs={2}><Form.Control type="text" name = "Tar_Water_Table_Depth" defaultValue={this.props.inputValues.Tar_Water_Table_Depth} required onChange={this.props.handleChange}/></Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
+                                  <Col xs={2}><Form.Label> <h6> 3) Halfsapce: </h6> </Form.Label></Col>
+                                  <Col xs={2}><CustomTooltip title="Halfspace shear wave velocity" placement="bottom" ><Form.Label> Vs (m/s) </Form.Label></CustomTooltip></Col>
+                                  <Col xs={2}><Form.Control type="text" name = "Tar_Halfspace_Vs" defaultValue={this.props.inputValues.Tar_Halfspace_Vs} required onChange={this.props.handleChange}/></Col>
+                                  <Col xs={2}><CustomTooltip title="Halfspace damping" placement="bottom" ><Form.Label>Damping (%) </Form.Label></CustomTooltip></Col>
+                                  <Col xs={2}><Form.Control type="text" name = "Tar_Halfspace_Damping" defaultValue={this.props.inputValues.Tar_Halfspace_Damping} required onChange={this.props.handleChange}/></Col>
+                                </Form.Group>                          
+                            </div>
+                        </Row>
+
                         </Col>
                         <Col xs={4}>
                             <Tabs id="Profiles" defaultActiveKey="Vs_Profile" transition={false} >
-                                <Tab eventKey="Vs_Profile" title="Shear Wave Velocity">
-                                    <div style={{ height: 450 }}>
+                                <Tab eventKey="Vs_Profile" title="Vs">
+                                    <div style={{ height: 550 }}>
                                         <ResponsiveLine
                                           data={this.props.inputValues.Site_Vs_Profile}
                                           margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                           xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                           yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                          axisTop={{ orient: 'top', tickSize: 5, legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
-                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
-                                          colors={{ scheme: 'category10' }}
+                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                          colors={{ datum: 'color' }}
                                           enablePoints={false}
                                           useMesh={true}
 
@@ -182,15 +222,15 @@ class Target_Site extends Component{
                                 </Tab>
 
                                 <Tab eventKey="Damping_Profile" title="Damping">
-                                    <div style={{ height: 450 }}>
+                                    <div style={{ height: 550 }}>
                                         <ResponsiveLine
                                           data={this.props.inputValues.Site_Damping_Profile}
                                           margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                           xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                           yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                          axisTop={{ orient: 'top', tickSize: 5, legend: 'Damping' , legendOffset: -40, legendPosition: 'middle'}}
-                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: 0, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
-                                          colors={{ scheme: 'category10' }}
+                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
+                                          colors={{ datum: 'color' }}
                                           enablePoints={false}
                                           useMesh={true}
 

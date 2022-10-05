@@ -7,10 +7,14 @@ import Tab_5 from "./5_Results";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
-import Kobe_1995    from "./motions/Kobe_1995.json";
-import Chi_Chi_1999 from "./motions/Chi_Chi_1999.json";
-
-
+import Sample_Motion       from "./motions/Sample_Motion.json";
+import Sample_Motion_E0039 from "./motions/Sample_Motion_E0039.json";
+import Sample_Motion_E0043 from "./motions/Sample_Motion_E0043.json";
+import Sample_Motion_E0061 from "./motions/Sample_Motion_E0061.json";
+import Sample_Motion_E0067 from "./motions/Sample_Motion_E0067.json";
+import Sample_Motion_E0075 from "./motions/Sample_Motion_E0075.json";
+import Sample_Motion_E0085 from "./motions/Sample_Motion_E0085.json";
+import Sample_Motion_E0102 from "./motions/Sample_Motion_E0102.json";
 
 class Application extends Component {
 
@@ -19,43 +23,58 @@ class Application extends Component {
         // set the initial input values
         this.state = {
             step: 1,             // Current Tab
+
+            // Reference and Target Soil Profile Parameters 
+            Ref_Halfspace_Vs: 760,
+            Ref_Halfspace_Damping: 0.005,
+            Ref_Water_Table_Depth: 25,
+            Tar_Halfspace_Vs: 760,
+            Tar_Halfspace_Damping: 0.005,
+            Tar_Water_Table_Depth: 5,            
             Target_Depth:5,      // Depth of Interest
-            Tol: 2,              // error tolerance (%)
+
+            Reference_Site_Soil_Profile: [{Name: '1',Thickness: 15, Vs: 350, Gamma: 18, Damping: 0.020, PI:0, OCR: 1, SoilModel: 2},
+                                          {Name: '2',Thickness:  5, Vs: 760, Gamma: 20, Damping: 0.010, PI:5, OCR: 1, SoilModel: 2}],  // Reference_Site_Soil_Profile
+
+            Target_Site_Soil_Profile: [{Name: '1',Thickness: 10, Vs: 250, Gamma: 18, Damping: 0.020, PI:0,  OCR:1, SoilModel: 2},
+                                       {Name: '2',Thickness: 10, Vs: 400, Gamma: 18, Damping: 0.010, PI:15, OCR:1, SoilModel: 2}],    // Target_Site_Soil_Profile                                          
+
+            Site_Vs_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":500, "y":0},{"x":500, "y":15},{"x":760, "y":15},{"x":760, "y":20},{"x":760, "y":20},{"x":760, "y":25}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":250, "y":0},{"x":250, "y":5},{"x":400, "y":5},{"x":400, "y":20},{"x":760, "y":20},{"x":760, "y":25}]},{"id": "Target Depth","color": "hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
+            Site_Damping_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20},{"x":0.005, "y":20},{"x":0.005, "y":25}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":0.02, "y":0},{"x":0.02, "y":5},{"x":0.01, "y":5},{"x":0.01, "y":20},{"x":0.005, "y":20},{"x":0.005, "y":25}]},{"id": "Target Depth","color":"hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
+
+            // Analysis Parameters
+            Analysis_Type: 'LE', // type of analysis
+            Tol: 0.01,           // error tolerance (%)
             MaxIter: 15,         // maximum number of iterations
             EffStrain: 0.65,     // effective strain ratio
+            StrainLimit: 0.05,   // strain limit
             MaxFreq: 20,         // maximum frequency (Hz)
             WavFrac: 0.2,        // wavelength fraction 
             PGA: 0.17,           // peak ground acceleration
             PGV: 13.27,          // peak ground velocity
+
+            // Analysis Results
+            whether_analyzed:  0, // Whether analysis is performed
+            Transfer_Functions:  [{"id": "Bedrock to Reference","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Bedrock to Target","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference to Target","color": "hsl(147, 50%, 47%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            Max_Strain_Profile:  [{"id": "Bedrock to Reference","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Bedrock to Target","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+
+            // FAS Parameters 
             Magnitude: 6,        // magnitude of earthquake
-            Distance: 30,        // distance from site
+            Distance: 10,        // distance from site
             Region: 'wna',       // region
             FASFile: './FAS.txt',// FAS File
-            Motion_File: 'Kobe_1995',// FAS File
-            FAS: [{"id": "FAS","data": [{"x":0.05, "y":0.01},{"x":1.049, "y":0.0299},{"x":2.048, "y":0.0316},{"x":3.047, "y":0.031},{"x":4.046, "y":0.029},{"x":5.045, "y":0.0264625},{"x":6.044, "y":0.02419},{"x":7.043, "y":0.022034},{"x":8.042, "y":0.01976333},{"x":9.041, "y":0.01773167},{"x":10.04, "y":0.01586},{"x":11.039, "y":0.014222},{"x":12.038, "y":0.012762},{"x":13.037, "y":0.011363},{"x":14.036, "y":0.010264},{"x":15.035, "y":0.009205},{"x":16.034, "y":0.008316},{"x":17.033, "y":0.007467},{"x":18.032, "y":0.0066756},{"x":19.031, "y":0.0059976},{"x":20.03, "y":0.005396},{"x":21.029, "y":0.0047984},{"x":22.028, "y":0.0042688},{"x":23.027, "y":0.00381055},{"x":24.026, "y":0.0034118},{"x":25.025, "y":0.0030225},{"x":26.024, "y":0.0027056},{"x":27.023, "y":0.00240425},{"x":28.022, "y":0.0021556},{"x":29.021, "y":0.0019158},{"x":30.02, "y":0.001706},{"x":31.019, "y":0.00153715},{"x":32.018, "y":0.0013664},{"x":33.017, "y":0.00122245},{"x":34.016, "y":0.0010884},{"x":35.015, "y":0.00097905},{"x":36.014, "y":0.00087088},{"x":37.013, "y":0.00077557},{"x":38.012, "y":0.00069553},{"x":39.011, "y":0.00061897},{"x":40.01, "y":0.00055443},{"x":41.009, "y":0.00049555},{"x":42.008, "y":0.00044196},{"x":43.007, "y":0.00039703},{"x":44.006, "y":0.00035576},{"x":45.005, "y":0.00031815},{"x":46.004, "y":0.0002832},{"x":47.003, "y":0.00025418},{"x":48.002, "y":0.00022595},{"x":49.001, "y":0.00020298},{"x":50, "y":0.000181}]},], // FAS File Contents
-            Motion: [{"id": "Ground Motion","color": "hsl(0, 100%, 0%)", "data": [{"x":0,"y":0},{"x":94.14,"y":0}]},{"id": "Input Motion","color": "hsl(0, 100%, 50%)","data": [{"x":0.05, "y":0.01},{"x":50, "y":0.000181}]}], // Motion File Contents
+            FAS: [{"id": "FAS","color": "hsl(0, 100%, 0%)", "data": [{"x":0.05, "y":0.01},{"x":1.049, "y":0.0299},{"x":2.048, "y":0.0316},{"x":3.047, "y":0.031},{"x":4.046, "y":0.029},{"x":5.045, "y":0.0264625},{"x":6.044, "y":0.02419},{"x":7.043, "y":0.022034},{"x":8.042, "y":0.01976333},{"x":9.041, "y":0.01773167},{"x":10.04, "y":0.01586},{"x":11.039, "y":0.014222},{"x":12.038, "y":0.012762},{"x":13.037, "y":0.011363},{"x":14.036, "y":0.010264},{"x":15.035, "y":0.009205},{"x":16.034, "y":0.008316},{"x":17.033, "y":0.007467},{"x":18.032, "y":0.0066756},{"x":19.031, "y":0.0059976},{"x":20.03, "y":0.005396},{"x":21.029, "y":0.0047984},{"x":22.028, "y":0.0042688},{"x":23.027, "y":0.00381055},{"x":24.026, "y":0.0034118},{"x":25.025, "y":0.0030225},{"x":26.024, "y":0.0027056},{"x":27.023, "y":0.00240425},{"x":28.022, "y":0.0021556},{"x":29.021, "y":0.0019158},{"x":30.02, "y":0.001706},{"x":31.019, "y":0.00153715},{"x":32.018, "y":0.0013664},{"x":33.017, "y":0.00122245},{"x":34.016, "y":0.0010884},{"x":35.015, "y":0.00097905},{"x":36.014, "y":0.00087088},{"x":37.013, "y":0.00077557},{"x":38.012, "y":0.00069553},{"x":39.011, "y":0.00061897},{"x":40.01, "y":0.00055443},{"x":41.009, "y":0.00049555},{"x":42.008, "y":0.00044196},{"x":43.007, "y":0.00039703},{"x":44.006, "y":0.00035576},{"x":45.005, "y":0.00031815},{"x":46.004, "y":0.0002832},{"x":47.003, "y":0.00025418},{"x":48.002, "y":0.00022595},{"x":49.001, "y":0.00020298},{"x":50, "y":0.000181}]},], // FAS File Contents
 
-            whether_analyzed:  0, // Whether analysis is performed
-
+            // Motion Parameters
             whether_processed: 0, // Whether analysis is performed
-
-            Reference_Site_Soil_Profile: [{Name: 'Layer 1',Thickness: 15, Vs: 500, Gamma: 18, Damping: 0.020, Soil_Model: 3},
-                                          {Name: 'Layer 2',Thickness:  5, Vs: 760, Gamma: 20, Damping: 0.010, Soil_Model: 3},
-                                          {Name: 'Bedrock',Thickness:  5, Vs: 760, Gamma: 22, Damping: 0.005, Soil_Model: 3}], // Reference_Site_Soil_Profile
-            
-            Target_Site_Soil_Profile: [{Name: 'Layer 1',Thickness:  5, Vs: 250, Gamma: 18, Damping: 0.020, Soil_Model: 3},
-                                       {Name: 'Layer 2',Thickness: 15, Vs: 400, Gamma: 18, Damping: 0.010, Soil_Model: 3},
-                                       {Name: 'Bedrock',Thickness:  5, Vs: 760, Gamma: 22, Damping: 0.005, Soil_Model: 3},], // Target_Site_Soil_Profile
-
-            Site_Vs_Profile: [{"id": "Reference","data": [{"x":500, "y":0},{"x":500, "y":15},{"x":760, "y":15},{"x":760, "y":20},{"x":760, "y":20},{"x":760, "y":25}]},{"id": "Target","data": [{"x":250, "y":0},{"x":250, "y":5},{"x":400, "y":5},{"x":400, "y":20},{"x":760, "y":20},{"x":760, "y":25}]},{"id": "Target Depth","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
-            Site_Damping_Profile: [{"id": "Reference","data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20},{"x":0.005, "y":20},{"x":0.005, "y":25}]},{"id": "Target","data": [{"x":0.02, "y":0},{"x":0.02, "y":5},{"x":0.01, "y":5},{"x":0.01, "y":20},{"x":0.005, "y":20},{"x":0.005, "y":25}]},{"id": "Target Depth","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
-            
-            // Results
-            Transfer_Functions:  [{"id": "Reference_Site","data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target_Site","data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference_to_Target","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            Motion_File: 'Sample_Motion',// motion File
+            Motion: [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x":0,"y":0},{"x":94.14,"y":0}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x":0.05, "y":0.01},{"x":50, "y":0.000181}]}], // Motion File Contents
+            Response_Spectrum:  [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            FA_Spectrum:  [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
         }
 
         const Motion_Data     = this.state.Motion;
-        Motion_Data[0].data   = Kobe_1995.data;
+        Motion_Data[0].data   = Sample_Motion.data;
         this.setState({
             Motion : Motion_Data
         })
@@ -69,7 +88,7 @@ class Application extends Component {
     nextStep = () => {
         const {step} = this.state
 
-        if(step==1) this.Generate_FAS();
+        if(step===1) this.Generate_FAS();
 
         this.setState({
             step : step + 1
@@ -108,14 +127,15 @@ class Application extends Component {
         )
         .then(response => response.json())
         .then(json => {
-            console.log(json);
+            // console.log(json);
             this.setState({
                 whether_analyzed : json.whether_analyzed,
-                Transfer_Functions : json.Transfer_Functions
+                Transfer_Functions : json.Transfer_Functions,
+                Max_Strain_Profile : json.Max_Strain_Profile
             })
             console.log(this.state);
 
-            if (this.state.whether_analyzed == 2){
+            if (this.state.whether_analyzed === 2){
 
                 this.Generate_Motion();
                 this.setState({
@@ -159,7 +179,7 @@ class Application extends Component {
             })
             console.log(this.state);
 
-            if (this.state.whether_analyzed == 2){
+            if (this.state.whether_analyzed === 2){
                 this.setState({
                     whether_analyzed : 0
                 })
@@ -193,11 +213,13 @@ class Application extends Component {
             console.log(json);
             this.setState({
                 whether_processed : json.whether_processed,
-                Motion : json.Motion
+                Motion : json.Motion,
+                FA_Spectrum : json.FA_Spectrum,
+                Response_Spectrum : json.Response_Spectrum
             })
             console.log(this.state);
 
-            if (this.state.whether_processed == 2){
+            if (this.state.whether_processed === 2){
                 this.setState({
                     whether_processed : 0
                 })
@@ -213,11 +235,13 @@ class Application extends Component {
 
         this.setState({[inputName]:inputValue});
 
-        if(inputName=="Target_Depth"){
+        if(inputName==="Target_Depth"){
             this.setState({[inputName]: parseFloat(inputValue)});
             this.update_Target_Depth_Plots(inputValue)
         }
-        else if(inputName=="Magnitude" || inputName=="Distance" || inputName=="Tol" || inputName=="MaxIter" || inputName=="EffStrain" || inputName=="MaxFreq" || inputName=="WavFrac"){
+        else if(inputName==="Magnitude" || inputName==="Distance" || inputName==="Tol" || inputName==="MaxIter" || inputName==="EffStrain" || inputName==="MaxFreq" || inputName==="WavFrac" || inputName==="Ref_Halfspace_Vs" 
+            || inputName==="Ref_Halfspace_Damping"|| inputName==="Ref_Water_Table_Depth"|| inputName==="Tar_Halfspace_Vs"|| inputName==="Tar_Halfspace_Damping"|| inputName==="Tar_Water_Table_Depth")
+        {
             this.setState({[inputName]: parseFloat(inputValue)});
         }
         else{
@@ -225,15 +249,26 @@ class Application extends Component {
             this.setState({[inputName]:inputValue});
         }
 
-        if(inputName=="Motion_File"){
+        if(inputName==="Motion_File"){
 
             const Motion_Data     = this.state.Motion
 
-            if(inputValue=="Kobe_1995")
-                Motion_Data[0].data=Kobe_1995.data;
-            if(inputValue=="Chi_Chi_1999")
-                Motion_Data[0].data=Chi_Chi_1999.data;
-
+            if(inputValue==="Sample_Motion")
+                Motion_Data[0].data=Sample_Motion.data;
+            if(inputValue==="Sample_Motion_E0039")
+                Motion_Data[0].data=Sample_Motion_E0039.data;
+            if(inputValue==="Sample_Motion_E0043")
+                Motion_Data[0].data=Sample_Motion_E0043.data;
+            if(inputValue==="Sample_Motion_E0061")
+                Motion_Data[0].data=Sample_Motion_E0061.data;
+            if(inputValue==="Sample_Motion_E0067")
+                Motion_Data[0].data=Sample_Motion_E0067.data;
+            if(inputValue==="Sample_Motion_E0075")
+                Motion_Data[0].data=Sample_Motion_E0075.data;
+            if(inputValue==="Sample_Motion_E0085")
+                Motion_Data[0].data=Sample_Motion_E0085.data;
+            if(inputValue==="Sample_Motion_E0102")
+                Motion_Data[0].data=Sample_Motion_E0102.data;
             this.Generate_Motion();
         }
 
@@ -300,6 +335,7 @@ class Application extends Component {
 
             for (let i = 1; i < n; i++){
                 let data = file_data_array[i].split(",");
+                if (data==""){ continue}
                 Motion_Data_Points.y = data[0];
                 Motion_Data_Points.x = (i-1)*dt;
                 Motion_Data_Array.push({...Motion_Data_Points});
@@ -349,8 +385,8 @@ class Application extends Component {
             console.log(workbook.SheetNames)
 
             if(workbook.SheetNames.length>1){
-                if(inputName=="ReferenceDataFile") worksheetName='Reference';
-                if(inputName=="TargetDataFile") worksheetName='Target';
+                if(inputName==="ReferenceDataFile") worksheetName='Reference';
+                if(inputName==="TargetDataFile") worksheetName='Target';
             }
 
             // console.log(worksheetName)
@@ -367,22 +403,24 @@ class Application extends Component {
 
             for (let i = 1; i < n; i++){
                 let data = data_array[i].split(",");
-                Site_Soil_Profile_Data_Points.Name      = data[0];
+                Site_Soil_Profile_Data_Points.Name      = i;
                 Site_Soil_Profile_Data_Points.Thickness = parseFloat(data[1]);
                 Site_Soil_Profile_Data_Points.Vs        = parseFloat(data[2]);
                 Site_Soil_Profile_Data_Points.Gamma     = parseFloat(data[3]);
-                Site_Soil_Profile_Data_Points.Damping   = parseFloat(data[4]);
-                Site_Soil_Profile_Data_Points.Soil_Model= 3;
+                Site_Soil_Profile_Data_Points.PI        = parseFloat(data[4]);
+                Site_Soil_Profile_Data_Points.OCR       = parseFloat(data[5]);
+                Site_Soil_Profile_Data_Points.Damping   = parseFloat(data[6]);
+                Site_Soil_Profile_Data_Points.SoilModel = parseInt(data[7]);
                 Site_Soil_Profile_Data_Array.push({...Site_Soil_Profile_Data_Points});
             }
 
             // console.log(inputName)
 
-            if(inputName=="ReferenceDataFile"){
+            if(inputName==="ReferenceDataFile"){
                 this.setState({Reference_Site_Soil_Profile:Site_Soil_Profile_Data_Array});
                 this.update_Reference_Site_Profile_Plots();
             }
-            if(inputName=="TargetDataFile"){
+            if(inputName==="TargetDataFile"){
                 this.setState({Target_Site_Soil_Profile:Site_Soil_Profile_Data_Array});
                 this.update_Target_Site_Profile_Plots();
             }
@@ -419,7 +457,7 @@ class Application extends Component {
         var ws = XLSX.utils.json_to_sheet(this.state.Reference_Site_Soil_Profile);
         XLSX.utils.book_append_sheet(wb,ws,"Reference");
 
-        var ws = XLSX.utils.json_to_sheet(this.state.Target_Site_Soil_Profile);
+        ws = XLSX.utils.json_to_sheet(this.state.Target_Site_Soil_Profile);
         XLSX.utils.book_append_sheet(wb,ws,"Target");
 
         XLSX.writeFile(wb,"SoilProfile.xlsx");
@@ -437,11 +475,11 @@ class Application extends Component {
         const Input_Motion_Data = this.state.Motion[1]["data"];
         var dt = Input_Motion_Data[1].x - Input_Motion_Data[0].x;
 
-        var data = dt.toString()+"\n";
+        var data = dt.toString();
         var n = Input_Motion_Data.length;
 
         for (let i = 0; i < n; i++){
-            data=data+Input_Motion_Data[i].y+"\n"
+            data=data+"\n"+Input_Motion_Data[i].y;
         }
 
       var blob = new Blob([data], { type: "text/plain;charset=utf-8" });
@@ -463,8 +501,8 @@ class Application extends Component {
         var Target_Depth_Vs_Data  = [{"x":minValue,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
 
         const Damping_Profile_Data = Site_Damping_Profile_Data[0].data.concat(Site_Damping_Profile_Data[1].data)
-        var maxValue = Math.max.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
-        var minValue = Math.min.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
+        maxValue = Math.max.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
+        minValue = Math.min.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
         var Target_Depth_Damping_Data  = [{"x":minValue,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
 
         // update Vs and Damping profile arrays
@@ -616,8 +654,9 @@ class Application extends Component {
     }
 
     render(){
-        const { step, Tol, MaxIter,  EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, Transfer_Functions, Motion_File,Motion,whether_processed} = this.state;
-        const inputValues = { Tol, MaxIter, EffStrain, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, Transfer_Functions, Motion_File,Motion,whether_processed};
+
+        const { step,Ref_Halfspace_Vs,Ref_Halfspace_Damping,Ref_Water_Table_Depth,Tar_Halfspace_Vs,Tar_Halfspace_Damping,Tar_Water_Table_Depth, Analysis_Type, Tol, MaxIter,  EffStrain, StrainLimit, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, Transfer_Functions, Motion_File,Motion,whether_processed,Max_Strain_Profile,Response_Spectrum,FA_Spectrum} = this.state;
+        const inputValues = { Ref_Halfspace_Vs,Ref_Halfspace_Damping,Ref_Water_Table_Depth,Tar_Halfspace_Vs,Tar_Halfspace_Damping,Tar_Water_Table_Depth, Analysis_Type, Tol, MaxIter, EffStrain, StrainLimit, MaxFreq, WavFrac, PGA, PGV, Magnitude, Distance, Region, FASFile, FAS, Target_Depth, whether_analyzed, Reference_Site_Soil_Profile, Site_Vs_Profile, Site_Damping_Profile, Target_Site_Soil_Profile, Transfer_Functions, Motion_File,Motion,whether_processed,Max_Strain_Profile,Response_Spectrum,FA_Spectrum};
                
         switch(step) {
         case 1:
@@ -626,6 +665,7 @@ class Application extends Component {
                     updateSoilLayers          = {this.update_Reference_Site_Soil_Profile}
                     readSoilProfileData       = {this.readExcelProfileData}
                     downloadSoilProfileData   = {this.writeExcelProfileData}
+                    handleChange = {this.handleChange}
                     inputValues={inputValues}
                     />
         case 2:
