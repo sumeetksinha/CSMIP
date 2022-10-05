@@ -27,7 +27,7 @@ class Target_Site extends Component{
                                            { title: "PI", field: "PI", type: "numeric", align:"center", initialEditValue:0, validate: rowData => rowData.PI >= 0},
                                            { title: "OCR", field: "OCR", type: "numeric", align:"center", initialEditValue:1, validate: rowData => rowData.OCR >= 1},
                                            { title: "Damping (%)", field: "Damping", type: "numeric", align:"center", initialEditValue:0.02, validate: rowData => (rowData.Damping <=1 && rowData.Damping >=0)},
-                                           { title: "Soil Model", field: "SoilModel", lookup: { 1: 'Elastic', 2: 'Darendeli', 3: 'VC' }, align:"center", initialEditValue:1, validate: rowData => rowData.SoilModel >0}
+                                           { title: "Soil Model", field: "SoilModel", lookup: { 1: 'Elastic', 2: 'Darendeli'}, align:"center", initialEditValue:1, validate: rowData => rowData.SoilModel >0}
                                        ];
 
         const styles = {
