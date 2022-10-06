@@ -39,7 +39,7 @@ class Application extends Component {
             Target_Site_Soil_Profile: [{Name: '1',Thickness: 10, Vs: 250, Gamma: 18, Damping: 0.020, PI:0,  OCR:1, SoilModel: 2},
                                        {Name: '2',Thickness: 10, Vs: 400, Gamma: 18, Damping: 0.010, PI:15, OCR:1, SoilModel: 2}],    // Target_Site_Soil_Profile                                          
 
-            Site_Vs_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":30, "y":0},{"x":30, "y":15},{"x":760, "y":15},{"x":760, "y":20}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":250, "y":0},{"x":250, "y":10},{"x":400, "y":10},{"x":400, "y":20}]},{"id": "Target Depth","color": "hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
+            Site_Vs_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":350, "y":0},{"x":350, "y":15},{"x":760, "y":15},{"x":760, "y":20}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":250, "y":0},{"x":250, "y":10},{"x":400, "y":10},{"x":400, "y":20}]},{"id": "Target Depth","color": "hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
             Site_Damping_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":0.02, "y":0},{"x":0.02, "y":10},{"x":0.01, "y":10},{"x":0.01, "y":20}]},{"id": "Target Depth","color":"hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
 
             // Analysis Parameters
