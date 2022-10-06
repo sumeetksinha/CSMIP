@@ -63,7 +63,7 @@ class Target_Site extends Component{
                                 onRowAdd: newData =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
+                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
                                         const OtherLayers = data.slice(0,data.Length);
                                         newData.Thickness=parseFloat(newData.Thickness);
                                         newData.Vs=parseFloat(newData.Vs);
@@ -84,7 +84,7 @@ class Target_Site extends Component{
                                 onRowUpdate: (newData, oldData) =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
+                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
                                         const dataUpdate = [...data];
                                         const index = oldData.tableData.id;
                                         newData.Thickness=parseFloat(newData.Thickness)
@@ -104,7 +104,7 @@ class Target_Site extends Component{
                                 onRowDelete: oldData =>
                                     new Promise((resolve, reject) => {
                                         setTimeout(() => {
-                                        const data = this.props.inputValues.Reference_Site_Soil_Profile;
+                                        const data = this.props.inputValues.Target_Site_Soil_Profile;
                                         const dataDelete = [...data];
                                         const index = oldData.tableData.id;
                                         dataDelete.splice(index, 1);
