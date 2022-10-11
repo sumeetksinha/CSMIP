@@ -17,6 +17,6 @@ Below are the list of user interface and what they offer
 4) Update : Update the plots to the latest live data  -->
 
 ---
-Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com)
+Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com), [Renmin Pretell] (https://www.linkedin.com/in/rpretelld/), and [Katerina Ziotopoulou] (https://cee.engineering.ucdavis.edu/directory/katerina-ziotopoulou)
 
 Request for adding features on sumeet.kumar507@gmail.com
