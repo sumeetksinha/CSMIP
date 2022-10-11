@@ -19,4 +19,4 @@ Below are the list of user interface and what they offer
 ---
 Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com), [Renmin Pretell] (https://www.linkedin.com/in/rpretelld/), and [Katerina Ziotopoulou] (https://cee.engineering.ucdavis.edu/directory/katerina-ziotopoulou)
 
-Request for adding features on sumeet.kumar507@gmail.com
+Request for adding features on sumeet.kumar507@gmail.com, Renmin.Pretell@gmail.com, or kziotopoulou@ucdavis.edu
