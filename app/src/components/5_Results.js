@@ -32,6 +32,26 @@ class Results extends Component{
 
         const CustomTooltip = withStyles(styles)(Tooltip);
 
+        const Site_Max_Strain_Profile_Data = this.props.inputValues.Max_Strain_Profile;
+        const Max_Strain_Profile_Data = Site_Max_Strain_Profile_Data[0].data.concat(Site_Max_Strain_Profile_Data[1].data)
+        var Max_Strain_Profile_MaxValue = 1.1*Math.max.apply(null,Max_Strain_Profile_Data.map(function(o) { return o.x; }));
+
+        const Site_Response_Spectrum_Data = this.props.inputValues.Response_Spectrum;
+        const Response_Spectrum_Data = Site_Response_Spectrum_Data[0].data.concat(Site_Response_Spectrum_Data[1].data)
+        var Response_Spectrum_MaxValue = 1.1*Math.max.apply(null,Response_Spectrum_Data.map(function(o) { return o.y; }));
+
+        const Site_FA_Spectrum_Data = this.props.inputValues.FA_Spectrum;
+        const FA_Spectrum_Data = Site_FA_Spectrum_Data[0].data.concat(Site_FA_Spectrum_Data[1].data)
+        var FA_Spectrum_MaxValue = 1.1*Math.max.apply(null,FA_Spectrum_Data.map(function(o) { return o.y; }));
+
+        const Site_Motion_Data = this.props.inputValues.Motion;
+        const Motion_Data = Site_Motion_Data[0].data.concat(Site_Motion_Data[1].data)
+        var Motion_MaxValue = 1.1*Math.max.apply(null,Motion_Data.map(function(o) { return o.y; }));
+
+        const Site_Transfer_Functions_Data = this.props.inputValues.Transfer_Functions;
+        const Transfer_Functions_Data = Site_Transfer_Functions_Data[0].data.concat(Site_Transfer_Functions_Data[1].data)
+        var Transfer_Functions_MaxValue = 1.1*Math.max.apply(null,Transfer_Functions_Data.map(function(o) { return o.y; }));
+        
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Results" transition={false}>
             <Tab eventKey="Reference_Site" title="Reference Site" disabled />
@@ -52,8 +72,8 @@ class Results extends Component{
                                       data={this.props.inputValues.Transfer_Functions}
                                       margin={{ top: 50, right: 0, bottom: 50, left: 70 }}
                                       xScale={{ type: 'log', base: 10, max: 'auto' }}
-                                      yScale={{ type: 'linear', min:"auto",  max: 'auto' }}
-                                      axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20,  legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
+                                      yScale={{ type: 'linear', min:0,  max: Transfer_Functions_MaxValue }}
+                                      axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20,  legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10,100]}}
                                       axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20,  legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
                                       colors={{ datum: 'color' }}
                                       enablePoints={false}
@@ -118,7 +138,7 @@ class Results extends Component{
                                       data={this.props.inputValues.Motion}
                                       margin={{ top: 10, right: 0, bottom: 50, left: 70 }}
                                       xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
-                                      yScale={{ type: 'linear', min:"auto",  max: 'auto' }}
+                                      yScale={{ type: 'linear', min: -Motion_MaxValue,  max: Motion_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation:-20, tickPadding: 5, legend: 'Time (s)', legendOffset: 36, legendPosition: 'middle'}}
                                       axisLeft={{ orient: 'left', tickSize: 5,  tickRotation:-20, legend: 'Acceleration (g)', legendOffset: -50, legendPosition: 'middle',}}
                                       colors={{ datum: 'color' }}
@@ -159,7 +179,7 @@ class Results extends Component{
                                       data={this.props.inputValues.FA_Spectrum}
                                       margin={{ top: 10, right: 0, bottom: 50, left: 70 }}
                                       xScale={{ type: 'log', base: 10, max: 'auto' }}
-                                      yScale={{ type: 'linear', min:0,  max: 'auto' }}
+                                      yScale={{ type: 'linear', min:0,  max: FA_Spectrum_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10, 100]}}
                                       axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Fourier Amplitude (g-s)', legendOffset: -50, legendPosition: 'middle',}}
                                       enablePoints={false}
@@ -199,7 +219,7 @@ class Results extends Component{
                                       data={this.props.inputValues.Response_Spectrum}
                                       margin={{ top: 10, right: 0, bottom: 50, left: 70 }}
                                       xScale={{ type: 'log',    base: 10, max: 'auto' }}
-                                      yScale={{ type: 'linear', min:0,  max: 'auto' }}
+                                      yScale={{ type: 'linear', min:0,  max: Response_Spectrum_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10, 100]}}
                                       axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Pseudo Spectral Acceleration (g)', legendOffset: -50, legendPosition: 'middle',}}
                                       enablePoints={false}
@@ -247,8 +267,8 @@ class Results extends Component{
                                 <ResponsiveLine
                                   data={this.props.inputValues.Max_Strain_Profile}
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
-                                  xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
-                                  yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
+                                  xScale={{ type: 'linear', min:"auto",  max: Max_Strain_Profile_MaxValue }}
+                                  yScale={{ type: 'linear', min:"auto",  max: "auto" , reverse:true }}
                                   axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Strain (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}

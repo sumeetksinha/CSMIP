@@ -79,6 +79,10 @@ class Application extends Component {
             Motion : Motion_Data
         })
 
+        this.update_Reference_Site_Profile_Plots()
+        this.update_Target_Site_Profile_Plots()
+        this.update_Target_Depth_Plots(this.state.Target_Depth)
+
         // Bind the submission to handleChange() 
         this.handleChange = this.handleChange.bind(this)
     }
@@ -498,12 +502,12 @@ class Application extends Component {
         const Vs_Profile_Data = Site_Vs_Profile_Data[0].data.concat(Site_Vs_Profile_Data[1].data)
         var maxValue = Math.max.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
         var minValue = Math.min.apply(null,Vs_Profile_Data.map(function(o) { return o.x; }));
-        var Target_Depth_Vs_Data  = [{"x":0,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
+        var Target_Depth_Vs_Data  = [{"x":0,"y":Target_Depth},{"x":maxValue*1.1,"y":Target_Depth}];
 
         const Damping_Profile_Data = Site_Damping_Profile_Data[0].data.concat(Site_Damping_Profile_Data[1].data)
         maxValue = Math.max.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
         minValue = Math.min.apply(null,Damping_Profile_Data.map(function(o) { return o.x; }));
-        var Target_Depth_Damping_Data  = [{"x":0,"y":Target_Depth},{"x":maxValue,"y":Target_Depth}];
+        var Target_Depth_Damping_Data  = [{"x":0,"y":Target_Depth},{"x":maxValue*1.1,"y":Target_Depth}];
 
         // update Vs and Damping profile arrays
         Site_Vs_Profile_Data[2].data = Target_Depth_Vs_Data;

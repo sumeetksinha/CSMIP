@@ -33,6 +33,10 @@ class Ground_Motion extends Component{
 
         const CustomTooltip = withStyles(styles)(Tooltip);
 
+        const Site_FAS_Data = this.props.inputValues.FAS;
+        const FAS_Data = Site_FAS_Data[0].data.concat(Site_FAS_Data[1].data)
+        var FAS_MaxValue = 1.1*Math.max.apply(null,FAS_Data.map(function(o) { return o.y; }));
+
 
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Ground_Motion" transition={false}>
@@ -84,9 +88,8 @@ class Ground_Motion extends Component{
                         data={data}
                         margin={{ top: 0, right: 0, bottom: 50, left: 70 }}
                         xScale={{ type: 'log', base: 10, max: 'auto' }}
-                        // yScale={{ type: 'log', base: 10, min:0.0001, max: 1 }}
-                        axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10]}}
-                        // axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickValues: [0.0001, 0.001, 0.01, 0.1, 1.0, 10],  tickRotation: 0, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        yScale={{ type: 'linear', min:0, max: FAS_MaxValue }}
+                        axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10,100]}}
                         axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
                         colors={{ datum: 'color' }}
                         enablePoints={false}
