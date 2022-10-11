@@ -34,7 +34,7 @@ class Ground_Motion extends Component{
         const CustomTooltip = withStyles(styles)(Tooltip);
 
         const Site_FAS_Data = this.props.inputValues.FAS;
-        const FAS_Data = Site_FAS_Data[0].data.concat(Site_FAS_Data[1].data)
+        const FAS_Data = Site_FAS_Data[0].data
         var FAS_MaxValue = 1.1*Math.max.apply(null,FAS_Data.map(function(o) { return o.y; }));
 
 
