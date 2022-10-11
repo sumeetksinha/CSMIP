@@ -1,11 +1,11 @@
 [CSMIP](https://csmip.herokuapp.com//)
 =========
 
-[<img src="./app/App.png">](https://csmip.herokuapp.com/)
-
 ### Description
 
 CSMIP is a web application for the development of input ground motions for nonlinear deformation analyses following the double convolution approach. The application is expected to facilitate and increase the use of ground motion seismic recordings by practitioners.
+
+[<img src="./app/App.png">](https://csmip.herokuapp.com/)
 
 <!-- ### Manual 
 
@@ -17,6 +17,6 @@ Below are the list of user interface and what they offer
 4) Update : Update the plots to the latest live data  -->
 
 ---
-Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com), [Renmin Pretell] (https://www.linkedin.com/in/rpretelld/), and [Katerina Ziotopoulou] (https://cee.engineering.ucdavis.edu/directory/katerina-ziotopoulou)
+Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com), [Renmin Pretell](https://www.linkedin.com/in/rpretelld/), and [Katerina Ziotopoulou](https://cee.engineering.ucdavis.edu/directory/katerina-ziotopoulou)
 
 Request for adding features on sumeet.kumar507@gmail.com, Renmin.Pretell@gmail.com, or kziotopoulou@ucdavis.edu
