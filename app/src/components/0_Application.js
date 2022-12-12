@@ -8,13 +8,10 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 
 import Sample_Motion       from "./motions/Sample_Motion.json";
-import Sample_Motion_E0039 from "./motions/Sample_Motion_E0039.json";
-import Sample_Motion_E0043 from "./motions/Sample_Motion_E0043.json";
-import Sample_Motion_E0061 from "./motions/Sample_Motion_E0061.json";
-import Sample_Motion_E0067 from "./motions/Sample_Motion_E0067.json";
-import Sample_Motion_E0075 from "./motions/Sample_Motion_E0075.json";
-import Sample_Motion_E0085 from "./motions/Sample_Motion_E0085.json";
-import Sample_Motion_E0102 from "./motions/Sample_Motion_E0102.json";
+import Kobe                from "./motions/Kobe.json";
+import Northridge          from "./motions/Northridge.json";
+import LomaGilroy          from "./motions/LomaGilroy.json";
+import Parkfield           from "./motions/Parkfield.json";
 
 class Application extends Component {
 
@@ -39,8 +36,8 @@ class Application extends Component {
             Target_Site_Soil_Profile: [{Name: '1',Thickness: 10, Vs: 250, Gamma: 18, Damping: 0.020, PI:0,  OCR:1, SoilModel: 2},
                                        {Name: '2',Thickness: 10, Vs: 400, Gamma: 18, Damping: 0.010, PI:15, OCR:1, SoilModel: 2}],    // Target_Site_Soil_Profile                                          
 
-            Site_Vs_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":350, "y":0},{"x":350, "y":15},{"x":760, "y":15},{"x":760, "y":20}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":250, "y":0},{"x":250, "y":10},{"x":400, "y":10},{"x":400, "y":20}]},{"id": "Target Depth","color": "hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
-            Site_Damping_Profile: [{"id": "Reference","color": "hsl(0, 100%, 0%)", "data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20}]},{"id": "Target","color": "hsl(0, 100%, 50%)","data": [{"x":0.02, "y":0},{"x":0.02, "y":10},{"x":0.01, "y":10},{"x":0.01, "y":20}]},{"id": "Target Depth","color":"hsl(147, 50%, 47%)","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
+            Site_Vs_Profile: [{"id": "Reference site","color": "hsl(120, 100%, 20%)", "data": [{"x":350, "y":0},{"x":350, "y":15},{"x":760, "y":15},{"x":760, "y":20}]},{"id": "Target site","color": "hsl(16, 88%, 54%)","data": [{"x":250, "y":0},{"x":250, "y":10},{"x":400, "y":10},{"x":400, "y":20}]},{"id": "Target depth","color": "hsl(0, 100%, 0%)","data": [{"x":0, "y":5},{"x":760, "y":5}]}], // Reference Vs Profile
+            Site_Damping_Profile: [{"id": "Reference site","color": "hsl(120, 100%, 20%)", "data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20}]},{"id": "Target site","color": "hsl(16, 88%, 54%)","data": [{"x":0.02, "y":0},{"x":0.02, "y":10},{"x":0.01, "y":10},{"x":0.01, "y":20}]},{"id": "Target depth","color":"hsl(0, 100%, 0%)","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
 
             // Analysis Parameters
             Analysis_Type: 'LE', // type of analysis
@@ -55,8 +52,8 @@ class Application extends Component {
 
             // Analysis Results
             whether_analyzed:  0, // Whether analysis is performed
-            Transfer_Functions:  [{"id": "Bedrock to Reference","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Bedrock to Target","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference to Target","color": "hsl(147, 50%, 47%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
-            Max_Strain_Profile:  [{"id": "Bedrock to Reference","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Bedrock to Target","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            Transfer_Functions:  [{"id": "Reference site: bedrock to surface","color": "hsl(120, 100%, 20%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target site: bedrock to surface","color": "hsl(16, 88%, 54%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference site's surface to target site's surface","color": "hsl(147, 50%, 47%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            Max_Strain_Profile:  [{"id": "Reference site","color": "hsl(120, 100%, 20%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target site","color": "hsl(16, 88%, 54%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
 
             // FAS Parameters 
             Magnitude: 6,        // magnitude of earthquake
@@ -68,13 +65,13 @@ class Application extends Component {
             // Motion Parameters
             whether_processed: 0, // Whether analysis is performed
             Motion_File: 'Sample_Motion',// motion File
-            Motion: [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x":0,"y":0},{"x":94.14,"y":0}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x":0.05, "y":0.01},{"x":50, "y":0.000181}]}], // Motion File Contents
-            Response_Spectrum:  [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
-            FA_Spectrum:  [{"id": "Reference Motion","color": "hsl(0, 100%, 0%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Target Motion","color": "hsl(0, 100%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            Motion: [{"id": "Target recording","color": "hsl(0, 100%, 50%)", "data": [{"x":0,"y":0},{"x":94.14,"y":0}]},{"id": "Reference recording","color": "hsl(0, 0%, 50%)","data": [{"x":0.05, "y":0.01},{"x":50, "y":0.000181}]}], // Motion File Contents
+            Response_Spectrum:  [{"id": "Target recording","color": "hsl(0, 100%, 50%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference recording","color": "hsl(0, 0%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
+            FA_Spectrum:  [{"id": "Target recording","color": "hsl(0, 100%, 50%)", "data": [{"x" :1, "y":2},{"x" :2, "y":5}]},{"id": "Reference recording","color": "hsl(0, 0%, 50%)","data": [{"x" :1, "y":2},{"x" :2, "y":5}]}],
         }
 
         const Motion_Data     = this.state.Motion;
-        Motion_Data[0].data   = Sample_Motion.data;
+        Motion_Data[1].data   = Sample_Motion.data;
         this.setState({
             Motion : Motion_Data
         })
@@ -258,21 +255,15 @@ class Application extends Component {
             const Motion_Data     = this.state.Motion
 
             if(inputValue==="Sample_Motion")
-                Motion_Data[0].data=Sample_Motion.data;
-            if(inputValue==="Sample_Motion_E0039")
-                Motion_Data[0].data=Sample_Motion_E0039.data;
-            if(inputValue==="Sample_Motion_E0043")
-                Motion_Data[0].data=Sample_Motion_E0043.data;
-            if(inputValue==="Sample_Motion_E0061")
-                Motion_Data[0].data=Sample_Motion_E0061.data;
-            if(inputValue==="Sample_Motion_E0067")
-                Motion_Data[0].data=Sample_Motion_E0067.data;
-            if(inputValue==="Sample_Motion_E0075")
-                Motion_Data[0].data=Sample_Motion_E0075.data;
-            if(inputValue==="Sample_Motion_E0085")
-                Motion_Data[0].data=Sample_Motion_E0085.data;
-            if(inputValue==="Sample_Motion_E0102")
-                Motion_Data[0].data=Sample_Motion_E0102.data;
+                Motion_Data[1].data=Sample_Motion.data;
+            if(inputValue==="Kobe")
+                Motion_Data[1].data=Kobe.data;
+            if(inputValue==="Northridge")
+                Motion_Data[1].data=Northridge.data;
+            if(inputValue==="LomaGilroy")
+                Motion_Data[1].data=LomaGilroy.data;
+            if(inputValue==="Parkfield")
+                Motion_Data[1].data=Parkfield.data;
             this.Generate_Motion();
         }
 
@@ -345,7 +336,7 @@ class Application extends Component {
                 Motion_Data_Array.push({...Motion_Data_Points});
             }
 
-            Motion_Data[0].data = Motion_Data_Array;
+            Motion_Data[1].data = Motion_Data_Array;
             this.setState({Motion:Motion_Data});
 
             this.Generate_Motion();

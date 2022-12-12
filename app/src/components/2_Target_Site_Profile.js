@@ -22,12 +22,12 @@ class Target_Site extends Component{
 
         const Soil_Profile_Table = [   { title: "Layer", field: "Name", type:"string", align:"center", editable: 'never'},
                                            { title: "H (m)", field: "Thickness", type:"numeric", align:"center", initialEditValue:5, validate: rowData => rowData.Thickness > 0},
-                                           { title: <h7>V<sub>s </sub>(m/s)</h7>, field: "Vs" , type:"numeric", align:"center", initialEditValue:100, validate: rowData => rowData.Vs > 0},
+                                           { title: <h7>V<sub>S </sub>(m/s)</h7>, field: "Vs" , type:"numeric", align:"center", initialEditValue:100, validate: rowData => rowData.Vs > 0},
                                            { title: <h7>γ<sub>sat </sub>(kN/m<sup>3</sup>)</h7>, field: "Gamma", type: "numeric", align:"center", initialEditValue:20, validate: rowData => rowData.Gamma > 0},
                                            { title: "PI", field: "PI", type: "numeric", align:"center", initialEditValue:0, validate: rowData => rowData.PI >= 0},
                                            { title: "OCR", field: "OCR", type: "numeric", align:"center", initialEditValue:1, validate: rowData => rowData.OCR >= 1},
                                            { title: "Damping (%)", field: "Damping", type: "numeric", align:"center", initialEditValue:0.02, validate: rowData => (rowData.Damping <=1 && rowData.Damping >=0)},
-                                           { title: "Soil Model", field: "SoilModel", lookup: { 1: 'Elastic', 2: 'Darendeli'}, align:"center", initialEditValue:1, validate: rowData => rowData.SoilModel >0}
+                                           { title: "Soil model", field: "SoilModel", lookup: { 1: 'Elastic', 2: 'Darendeli'}, align:"center", initialEditValue:1, validate: rowData => rowData.SoilModel >0}
                                        ];
 
         const styles = {
@@ -45,14 +45,14 @@ class Target_Site extends Component{
         return( 
 
             <Tabs id="CSMIP_Tabs" activeKey="Target_Site" transition={false}>
-            <Tab eventKey="Reference_Site" title="Reference Site" disabled />
-            <Tab eventKey="Target_Site" title="Target Site" >
+            <Tab eventKey="Reference_Site" title="Reference site" disabled />
+            <Tab eventKey="Target_Site" title="Target site" >
                 <p></p>
                 <Form onSubmit={this.saveAndContinue} validated>
                     <Row> <Col xs={8}>
                         <Row>
                         <MaterialTable
-                            title= "1) Soil Profile"
+                            title= "1) Soil profile:"
                             style={{ height: "80%" }}
                             columns={Soil_Profile_Table}
                             data={this.props.inputValues.Target_Site_Soil_Profile}
@@ -117,7 +117,7 @@ class Target_Site extends Component{
 
                             actions={[
                                 {icon:()=>  
-                                    <label> <font color="blue" size="+1.5"> <b>Target Depth (m)</b>  </font><input type="text" name="Target_Depth" size="1" height="20px" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange} /></label>,
+                                    <label> <font color="blue" size="+1.5"> <b>Target depth (m)</b>  </font><input type="text" name="Target_Depth" size="1" height="20px" defaultValue={this.props.inputValues.Target_Depth} required onChange={this.props.handleChange} /></label>,
                                     isFreeAction:true,
                                 },
                                 {icon:()=>  <div>
@@ -155,7 +155,12 @@ class Target_Site extends Component{
                                 maxBodyHeight: 400,
                                 pageSizeOptions: [5, 10, 100, 1000]
                             }}
-                            
+
+                            localization={{
+                                header: {
+                                  actions: "Edit"
+                                }
+                              }}  
                         />
                         </Row>
                         <Row>
@@ -167,7 +172,7 @@ class Target_Site extends Component{
                                 </Form.Group>
                                 <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
                                   <Col xs={2}><Form.Label> <h6> 3) Halfsapce: </h6> </Form.Label></Col>
-                                  <Col xs={2}><CustomTooltip title="Halfspace shear wave velocity" placement="bottom" ><Form.Label> Vs (m/s) </Form.Label></CustomTooltip></Col>
+                                  <Col xs={2}><CustomTooltip title="Halfspace shear wave velocity" placement="bottom" ><Form.Label> V<sub>S</sub> (m/s) </Form.Label></CustomTooltip></Col>
                                   <Col xs={2}><Form.Control type="text" name = "Tar_Halfspace_Vs" defaultValue={this.props.inputValues.Tar_Halfspace_Vs} required onChange={this.props.handleChange}/></Col>
                                   <Col xs={2}><CustomTooltip title="Halfspace damping" placement="bottom" ><Form.Label>Damping (%) </Form.Label></CustomTooltip></Col>
                                   <Col xs={2}><Form.Control type="text" name = "Tar_Halfspace_Damping" defaultValue={this.props.inputValues.Tar_Halfspace_Damping} required onChange={this.props.handleChange}/></Col>
@@ -185,7 +190,7 @@ class Target_Site extends Component{
                                           margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                           xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                           yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Shear wave velocity, Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
                                           axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                           colors={{ datum: 'color' }}
                                           enablePoints={false}
@@ -228,7 +233,7 @@ class Target_Site extends Component{
                                           margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                           xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                           yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                          axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Small-strain damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                           axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                           colors={{ datum: 'color' }}
                                           enablePoints={false}
@@ -276,8 +281,8 @@ class Target_Site extends Component{
   
           
             </Tab>
-            <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
-            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
+            <Tab eventKey="Ground_Motion" title="Ground motion" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis parameters" disabled/>
             <Tab eventKey="Results" title="Results" disabled/>
         </Tabs>
         );

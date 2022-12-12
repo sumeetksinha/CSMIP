@@ -40,16 +40,16 @@ class Ground_Motion extends Component{
 
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Ground_Motion" transition={false}>
-            <Tab eventKey="Reference_Site" title="Reference Site" disabled />
-            <Tab eventKey="Target_Site" title="Target Site" disabled/>
-            <Tab eventKey="Ground_Motion" title="Ground Motion">
+            <Tab eventKey="Reference_Site" title="Reference site" disabled />
+            <Tab eventKey="Target_Site" title="Target site" disabled/>
+            <Tab eventKey="Ground_Motion" title="Ground motion">
 
             <p></p>
 
               <Form  onSubmit={this.saveAndContinue} validated>
                 <Row> 
                   <Col xs={8}>
-                    <h6>1) Earthquake Source Information </h6> 
+                    <h6>1) Earthquake source information </h6> 
                     <Form.Group className="mb-2" as={Row} controlId="Date"  style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
                       <Col xs={2.5}><CustomTooltip title="Earthquake Magnitue" placement="down" ><Form.Label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Magnitude (M<sub>w</sub>) </Form.Label></CustomTooltip></Col>
                       <Col xs={2}><Form.Control type="text" name = "Magnitude" defaultValue={this.props.inputValues.Magnitude} required onChange={this.props.handleChange}/></Col>
@@ -67,11 +67,11 @@ class Ground_Motion extends Component{
 
                     </Form.Group>
 
-                    <p></p>
+                    <br/>
 
                     <Form inline>
                         <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
-                            <Col xs={13}><Form.Label> <h6> &nbsp;&nbsp; 2) Frequency Amplitude Spectrum 
+                            <Col xs={13}><Form.Label> <h6> &nbsp;&nbsp; 2) Frequency amplitude spectrum 
                             &nbsp;&nbsp; {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="grow" size="sm" animation="border"/> Generate</Button>) : 
                                         (<Button variant="primary" onClick={this.props.Generate_FAS} >Generate</Button>) }</h6></Form.Label>
                             </Col>
@@ -90,7 +90,7 @@ class Ground_Motion extends Component{
                         xScale={{ type: 'log', base: 10, max: 'auto' }}
                         yScale={{ type: 'linear', min:0, max: FAS_MaxValue }}
                         axisBottom={{ orient: 'bottom', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10,100]}}
-                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                        axisLeft={{ orient: 'left', tickSize: 10, tickPadding: 5, tickRotation: -20, legend: 'Frequency amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
                         colors={{ datum: 'color' }}
                         enablePoints={false}
                         useMesh={true}
@@ -108,7 +108,7 @@ class Ground_Motion extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Shear wave velocity, Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -151,7 +151,7 @@ class Ground_Motion extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Small-strain damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -195,7 +195,7 @@ class Ground_Motion extends Component{
                 <Button variant="primary" type="submit">Next</Button>
               </Form>
             </Tab>
-            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis parameters" disabled/>
             <Tab eventKey="Results" title="Results" disabled/>
           </Tabs>
         );

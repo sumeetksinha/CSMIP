@@ -402,7 +402,7 @@ def Generate_Motion():
     # Input Motion form the user
     ###########################################################################
     Motion                = request.json["Motion"];
-    Reference_Motion_Data = request.json["Motion"][0]["data"];
+    Reference_Motion_Data = request.json["Motion"][1]["data"];
     Response_Spectrum     = request.json["Response_Spectrum"];
     FA_Spectrum           = request.json["FA_Spectrum"];
 
@@ -434,8 +434,8 @@ def Generate_Motion():
     for i in range(N):
         Target_Motion_Motion_Data[i]["y"] = copy.deepcopy(Target_Motion_Acc[i])
 
-    Motion[0]["data"] = copy.deepcopy(Reference_Motion_Data);
-    Motion[1]["data"] = copy.deepcopy(Target_Motion_Motion_Data);
+    Motion[1]["data"] = copy.deepcopy(Reference_Motion_Data);
+    Motion[0]["data"] = copy.deepcopy(Target_Motion_Motion_Data);
 
     # Calculating smooth FAS
     ###########################################################################
@@ -460,8 +460,8 @@ def Generate_Motion():
         Reference_FA_Spectrum_Data_Points["y"] = Smooth_FAS_Reference_Motion[i];
         Reference_FA_Spectrum_Data_Array.append(Reference_FA_Spectrum_Data_Points);
 
-    FA_Spectrum[0]["data"] = Reference_FA_Spectrum_Data_Array;
-    FA_Spectrum[1]["data"] = Target_FA_Spectrum_Data_Array;
+    FA_Spectrum[1]["data"] = Reference_FA_Spectrum_Data_Array;
+    FA_Spectrum[0]["data"] = Target_FA_Spectrum_Data_Array;
 
     # Calculating Response Spectrum
     ###########################################################################
@@ -485,8 +485,8 @@ def Generate_Motion():
         Reference_Response_Spectrum_Data_Points["y"] = RS_Reference_Motion[i];
         Reference_Response_Spectrum_Data_Array.append(Reference_Response_Spectrum_Data_Points);
 
-    Response_Spectrum[0]["data"] = Reference_Response_Spectrum_Data_Array;
-    Response_Spectrum[1]["data"] = Target_Response_Spectrum_Data_Array;
+    Response_Spectrum[1]["data"] = Reference_Response_Spectrum_Data_Array;
+    Response_Spectrum[0]["data"] = Target_Response_Spectrum_Data_Array;
 
     # print(Motion[0]["data"][:10])
     # print(Motion[1]["data"][:10])

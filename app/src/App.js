@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Application from "./components/0_Application";
 import './App.css';
-import Illustration from './Profile_Pic.png';
+import Illustration from './App.png';
 // import { PythonProvider } from "react-py";
 
 // function Codeblock() {
@@ -61,8 +61,8 @@ function App() {
   return (
       <div className="container"> 
 
-        <h2> Generate Ground Motions for Nonlinear Deformation Analyses </h2>
-        A web application for the development of input ground motions for nonlinear deformation analyses following the double convolution approach. The application is expected to facilitate and increase the use of ground motion seismic recordings by practitioners.        <hr/>
+        <h2> GENERATE INPUT GROUND MOTIONS FOR NUMERICAL ANALYSES </h2>
+        A web application for the development of input ground motions for the numerical evaluation of structures in engineering practice    <hr/>
 
         <Application />
 
@@ -76,14 +76,14 @@ function App() {
 
         <hr/>
 
-        <h5> Refernces</h5>
+        <h5>References</h5>
         <ul>
-        <li>Pretell R., Sinha S.K., Ziotopoulou K., and Watson-Lamprey J.A. (2021). <i> Broadening the utilization of CSMIP data: Double convolution methodology towards developing input motions for site response and nonlinear deformation analyses.</i> In SMIP Seminar on Utilization of Strong Motion Data, California Geological Survey.</li>
-        <li>Pretell R., Ziotopoulou K., and Abrahamson N. (2019). <i> Methodology for the development of input motions for nonlinear deformation analyses</i>. 7th International Conference on Earthquake Geotechnical Engineering, Rome, Italy.</li>
+        <li>Pretell R., Sinha S.K., Ziotopoulou K., and Watson-Lamprey J.A. (2021). <i> Broadening the utilization of CSMIP data: Double convolution methodology towards developing input motions for site response and nonlinear deformation analyses.</i> In Proceedings of SMIP 2021 Seminar on Utilization of Strong-Motion Data (SMIP21), California Geological Survey. (<a target="_blank" href="https://www.conservation.ca.gov/cgs/Documents/Program-SMIP/Seminar/SMIP21-P1-Paper-by-Ziotopoulou-a11y.pdf">pdf</a>)</li>
+        <li>Pretell R., Ziotopoulou K., and Abrahamson N. (2019). <i> Methodology for the development of input motions for nonlinear deformation analyses</i>. In Proceedings of 7<sup>th</sup> International Conference on Earthquake Geotechnical Engineering (ICEGE), Rome, Italy. (<a target="_blank" href="https://www.issmge.org/uploads/publications/59/104/ch507.pdf">pdf</a>) </li>
         </ul>
 
-        <h5> Acknowledgements</h5>
-        <p>The project was funded by California Strong Motion Instrumentation Program under the agreemnet number xxxxx.</p>
+        <h5>Acknowledgements</h5>
+        <p>This project was funded by the California Strong Motion Instrumentation Program (CSMIP), under the agreement number xxxxxx </p>
 
     </div>
   );

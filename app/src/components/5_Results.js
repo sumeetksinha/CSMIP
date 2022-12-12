@@ -54,10 +54,10 @@ class Results extends Component{
         
         return( 
           <Tabs id="CSMIP_Tabs" activeKey="Results" transition={false}>
-            <Tab eventKey="Reference_Site" title="Reference Site" disabled />
-            <Tab eventKey="Target_Site" title="Target Site" disabled/>
-            <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
-            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters" disabled/>
+            <Tab eventKey="Reference_Site" title="Reference site" disabled />
+            <Tab eventKey="Target_Site" title="Target site" disabled/>
+            <Tab eventKey="Ground_Motion" title="Ground motion" disabled/>
+            <Tab eventKey="Analysis_Parameters" title="Analysis parameters" disabled/>
             <Tab eventKey="Results" title="Results">
             <p></p>
 
@@ -66,7 +66,7 @@ class Results extends Component{
                     <Col xs={8}>
                       <div style={{ height: "250px" }}>
                         <Tabs id="Results" defaultActiveKey="Motion_Analysis" transition={false} >
-                            <Tab eventKey="Transfer_Functions" title="Transfer Functions">
+                            <Tab eventKey="Transfer_Functions" title="Transfer functions">
                                 <div style={{ height: 550 }}>
                                     <ResponsiveLine
                                       data={this.props.inputValues.Transfer_Functions}
@@ -74,7 +74,7 @@ class Results extends Component{
                                       xScale={{ type: 'log', base: 10, max: 'auto' }}
                                       yScale={{ type: 'linear', min:0,  max: Transfer_Functions_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20,  legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10,100]}}
-                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20,  legend: 'Fourier Amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
+                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20,  legend: 'Frequency amplitude (g-s)', legendOffset: -60, legendPosition: 'middle',}}
                                       colors={{ datum: 'color' }}
                                       enablePoints={false}
                                       useMesh={true}
@@ -109,21 +109,17 @@ class Results extends Component{
                                </div>
                             </Tab>
 
-                            <Tab eventKey="Motion_Analysis" title="Motion Analysis">
+                            <Tab eventKey="Motion_Analysis" title="Motion analysis">
                                 <p> </p>
 
                                 <Form inline>
                                     <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
-                                        <Col xs={7}><CustomTooltip title="Select Ground Motion for the Reference site" placement="down" ><Form.Label> <h6>1) Reference Motion {whether_processed ? (<Spinner as="span" animation="border" size="sm" />) : (<font></font> )} </h6></Form.Label></CustomTooltip></Col>
+                                        <Col xs={6}><CustomTooltip title="Select Ground Motion for the Reference site" placement="down" ><Form.Label> <h6>1) Reference recording {whether_processed ? (<Spinner as="span" animation="border" size="sm" />) : (<font></font> )} </h6></Form.Label></CustomTooltip></Col>
                                         <Col xs={3}><Form.Control as="select" name= "Motion_File" defaultValue={this.props.inputValues.Motion_File} required onChange={this.props.handleChange}>
-                                            <option value="Sample_Motion">Default </option>
-                                            <option value="Sample_Motion_E0039">E0039</option>
-                                            <option value="Sample_Motion_E0043">E0043</option>
-                                            <option value="Sample_Motion_E0061">E0061</option>
-                                            <option value="Sample_Motion_E0067">E0067</option>
-                                            <option value="Sample_Motion_E0075">E0075</option>
-                                            <option value="Sample_Motion_E0085">E0085</option>
-                                            <option value="Sample_Motion_E0102">E0102</option>
+                                            <option value="Kobe">Kobe</option>
+                                            <option value="Parkfield">Parkfield</option>
+                                            <option value="Northridge">Northridge</option>
+                                            <option value="LomaGilroy">Loma Gilroy</option>
                                             </Form.Control>
                                         </Col>
                                     </Form.Group>
@@ -154,7 +150,7 @@ class Results extends Component{
                                                 translateY: -10,
                                                 itemsSpacing: 0,
                                                 itemDirection: 'left-to-right',
-                                                itemWidth: 100,
+                                                itemWidth: 150,
                                                 itemHeight: 20,
                                                 itemOpacity: 0.75,
                                                 symbolSize: 12,
@@ -181,7 +177,7 @@ class Results extends Component{
                                       xScale={{ type: 'log', base: 10, max: 'auto' }}
                                       yScale={{ type: 'linear', min:0,  max: FA_Spectrum_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10, 100]}}
-                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Fourier Amplitude (g-s)', legendOffset: -50, legendPosition: 'middle',}}
+                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Frequency amplitude (g-s)', legendOffset: -50, legendPosition: 'middle',}}
                                       enablePoints={false}
                                       colors={{ datum: 'color' }}
                                       useMesh={true}
@@ -221,7 +217,7 @@ class Results extends Component{
                                       xScale={{ type: 'log',    base: 10, max: 'auto' }}
                                       yScale={{ type: 'linear', min:0,  max: Response_Spectrum_MaxValue }}
                                       axisBottom={{ orient: 'bottom', tickSize: 5, tickRotation: -20, legend: 'Frequency (Hz)', legendOffset: 36, legendPosition: 'middle', tickValues: [0.01, 0.1, 1.0, 10, 100]}}
-                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Pseudo Spectral Acceleration (g)', legendOffset: -50, legendPosition: 'middle',}}
+                                      axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Pseudo spectral acceleration (g)', legendOffset: -50, legendPosition: 'middle',}}
                                       enablePoints={false}
                                       colors={{ datum: 'color' }}
                                       useMesh={true}
@@ -262,14 +258,14 @@ class Results extends Component{
 
                   <Col xs={4}>
                     <Tabs id="Profiles" defaultActiveKey="Max_Strain_Profile" transition={false} >
-                        <Tab eventKey="Max_Strain_Profile" title="Max Strain">
+                        <Tab eventKey="Max_Strain_Profile" title="Shear strain">
                             <div style={{ height: 550 }}>
                                 <ResponsiveLine
                                   data={this.props.inputValues.Max_Strain_Profile}
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: Max_Strain_Profile_MaxValue }}
                                   yScale={{ type: 'linear', min:"auto",  max: "auto" , reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Strain (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Maximum shear strain (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -311,7 +307,7 @@ class Results extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Shear wave velocity, Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -354,7 +350,7 @@ class Results extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Small-strain damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -395,7 +391,7 @@ class Results extends Component{
 
                 <p> </p>
                 <Button variant="secondary" onClick={this.back}>Back</Button>{' '}
-                <Button variant="primary" onClick={this.props.downloadFile}> Download Target Motion </Button>
+                <Button variant="primary" onClick={this.props.downloadFile}> Download results </Button>
               </Form>
 
 

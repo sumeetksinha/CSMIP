@@ -40,21 +40,21 @@ class Analysis_Settings extends Component{
       if (this.props.inputValues.Analysis_Type==="EQL") {
         Analysis_Parameters =  
         <div>
-          <h6>2) Analysis Parameters</h6>
+          <h6>2) Analysis parameters:</h6>
           <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Error tolerance is the limit at which the iterative process will terminate. "placement="right" ><Form.Label> &nbsp;&nbsp; Error Tolerance (%) </Form.Label></CustomTooltip></Col>
+            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Error tolerance is the limit at which the iterative process will terminate. "placement="right" ><Form.Label> &nbsp;&nbsp; Error tolerance (%) </Form.Label></CustomTooltip></Col>
             <Col sm={{ span: 4, offset: 0 }}><Form.Control type="text" name = "Tol" defaultValue={this.props.inputValues.Tol} required onChange={this.props.handleChange}/></Col>
           </Form.Group> 
           <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Maximum number of iterations to perform." placement="right" ><Form.Label> &nbsp;&nbsp; Maximum Iterations </Form.Label></CustomTooltip></Col>
+            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Maximum number of iterations to perform." placement="right" ><Form.Label> &nbsp;&nbsp; Maximum iterations </Form.Label></CustomTooltip></Col>
             <Col sm={{ span: 4, offset: 0 }}><Form.Control type="text" name = "MaxIter" defaultValue={this.props.inputValues.MaxIter} required onChange={this.props.handleChange}/></Col>
           </Form.Group>  
           <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Ratio between the maximum strain and effective strain used to compute strain compatible properties." placement="right" ><Form.Label> &nbsp;&nbsp; Effective Strain Ratio</Form.Label></CustomTooltip></Col>
+            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Ratio between the maximum strain and effective strain used to compute strain-compatible properties." placement="right" ><Form.Label> &nbsp;&nbsp; Effective strain ratio</Form.Label></CustomTooltip></Col>
             <Col sm={{ span: 4, offset: 0 }}><Form.Control type="text" name = "EffStrain" defaultValue={this.props.inputValues.EffStrain} required onChange={this.props.handleChange}/></Col>
           </Form.Group>  
           <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Limit of strain in calculations. If this strain is exceed, the iterative calculation is ended." placement="right" ><Form.Label> &nbsp;&nbsp; Strain Limit</Form.Label></CustomTooltip></Col>
+            <Col sm={{ span: 8, offset: 0 }}><CustomTooltip title="Limit of strain in calculations. If this strain is exceed, the iterative calculation is ended." placement="right" ><Form.Label> &nbsp;&nbsp; Strain limit</Form.Label></CustomTooltip></Col>
             <Col sm={{ span: 4, offset: 0 }}><Form.Control type="text" name = "MaxFreq" defaultValue={this.props.inputValues.StrainLimit} required onChange={this.props.handleChange}/></Col>
           </Form.Group> 
         </div>;
@@ -62,11 +62,11 @@ class Analysis_Settings extends Component{
 
       return( 
         <Tabs id="CSMIP_Tabs" activeKey="Analysis_Parameters" transition={false}>
-          <Tab eventKey="Reference_Site" title="Reference Site" disabled />
-          <Tab eventKey="Target_Site" title="Target Site" disabled/>
-          <Tab eventKey="Ground_Motion" title="Ground Motion" disabled/>
+          <Tab eventKey="Reference_Site" title="Reference site" disabled />
+          <Tab eventKey="Target_Site" title="Target site" disabled/>
+          <Tab eventKey="Ground_Motion" title="Ground motion" disabled/>
 
-            <Tab eventKey="Analysis_Parameters" title="Analysis Parameters">
+            <Tab eventKey="Analysis_Parameters" title="Analysis parameters">
             <p></p>
             <Form validated onSubmit={this.saveAndContinue} >
 
@@ -74,11 +74,11 @@ class Analysis_Settings extends Component{
                 <Col xs={8}>
 
                   <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                    <Col sm={{ span: 4, offset: 0 }}><CustomTooltip title="Set Site Reponse Analysis Calculation Method" placement="right" ><Form.Label> <h6>1) Select Analysis Type </h6></Form.Label></CustomTooltip></Col>
+                    <Col sm={{ span: 4, offset: 0 }}><CustomTooltip title="Set Site Reponse Analysis Calculation Method" placement="right" ><Form.Label> <h6>1) Analysis type: </h6></Form.Label></CustomTooltip></Col>
                     <Col sm={{ span: 4, offset: 0 }}>
                             <Form.Control as="select" name= "Analysis_Type" defaultValue={this.props.inputValues.Analysis_Type} required onChange={this.props.handleChange}>
-                            <option value="LE">Linear Elastic</option>
-                            <option value="EQL">Equivalent Linear</option>
+                            <option value="LE">Linear elastic</option>
+                            <option value="EQL">Equivalent linear</option>
                           </Form.Control>                      
                     </Col>
                   </Form.Group>
@@ -98,7 +98,7 @@ class Analysis_Settings extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20,legend: 'Shear Velocity Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Shear wave velocity, Vs (m/s)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
@@ -141,7 +141,7 @@ class Analysis_Settings extends Component{
                                   margin={{ top: 50, right: 0, bottom: 10, left: 70 }}
                                   xScale={{ type: 'linear', min:"auto",  max: 'auto' }}
                                   yScale={{ type: 'linear', min:"auto",  max: 'auto', reverse:true }}
-                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
+                                  axisTop={{ orient: 'top', tickSize: 5, tickRotation: -20, legend: 'Small-strain damping (%)' , legendOffset: -40, legendPosition: 'middle'}}
                                   axisLeft={{ orient: 'left', tickSize: 5,  tickRotation: -20, legend: 'Depth (m)', legendOffset: -40, legendPosition: 'middle',}}
                                   colors={{ datum: 'color' }}
                                   enablePoints={false}
