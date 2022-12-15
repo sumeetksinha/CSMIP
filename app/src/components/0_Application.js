@@ -467,19 +467,161 @@ class Application extends Component {
         const inputName  = event.target.name;
         const inputValue = event.target.value;
 
-        const Input_Motion_Data = this.state.Motion[1]["data"];
-        var dt = Input_Motion_Data[1].x - Input_Motion_Data[0].x;
+        // const Input_Motion_Data = this.state.Motion[1]["data"];
+        // var dt = Input_Motion_Data[1].x - Input_Motion_Data[0].x;
 
-        var data = dt.toString();
-        var n = Input_Motion_Data.length;
+        // var data = dt.toString();
+        // var n = Input_Motion_Data.length;
+
+        // for (let i = 0; i < n; i++){
+        //     data=data+"\n"+Input_Motion_Data[i].y;
+        // }
+
+        // var blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+        // saveAs(blob, "InputMotion.txt");
+
+
+        // // get the id and input value
+        // const inputName  = event.target.name;
+        // const inputValue = event.target.value;
+
+        // create a new XLSX file
+        var wb = XLSX.utils.book_new();
+
+        // update properties of the file
+        wb.Props = {
+                Title: "CSMIP App",
+                Subject: "Results",
+                Author: "Sumeet Kumar Sinha",
+                CreatedDate: new Date()
+        };
+
+        const time = [];
+        const recording = [];
+        const Target_Recording    = this.state.Motion[0]["data"]
+        const Reference_Recording = this.state.Motion[1]["data"]
+        var n = Target_Recording.length;
 
         for (let i = 0; i < n; i++){
-            data=data+"\n"+Input_Motion_Data[i].y;
+            time[i]=[Target_Recording[i].x];
+            recording[i] = [Reference_Recording[i].y,Target_Recording[i].y]
         }
 
-      var blob = new Blob([data], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, "InputMotion.txt");
+        const freq = [];
+        const FAS_Spectrum  = [];
+        const Target_FAS_Spectrum    = this.state.FA_Spectrum[0]["data"]
+        const Reference_FAS_Spectrum = this.state.FA_Spectrum[1]["data"]
+        n = Target_FAS_Spectrum.length;
 
+        for (let i = 0; i < n; i++){
+            freq[i]=[Target_FAS_Spectrum[i].x];
+            FAS_Spectrum[i] = [Reference_FAS_Spectrum[i].y,Target_FAS_Spectrum[i].y]
+        }
+
+        const freq2 = [];
+        const PSA_Spectrum  = [];
+        const Target_PSA_Spectrum    = this.state.Response_Spectrum[0]["data"]
+        const Reference_PSA_Spectrum = this.state.Response_Spectrum[1]["data"]
+        n = Target_PSA_Spectrum.length;
+
+        for (let i = 0; i < n; i++){
+            freq2[i]=[Target_PSA_Spectrum[i].x];
+            PSA_Spectrum[i] = [Reference_PSA_Spectrum[i].y,Target_PSA_Spectrum[i].y]
+        }
+
+        const freq3 = [];
+        const Transfer_Functions  = [];
+        const Target_Transfer_Functions              = this.state.Transfer_Functions[1]["data"]
+        const Reference_Transfer_Functions           = this.state.Transfer_Functions[0]["data"]
+        const Reference_to_Target_Transfer_Functions = this.state.Transfer_Functions[2]["data"]
+        n = Target_Transfer_Functions.length;
+
+        for (let i = 0; i < n; i++){
+            freq3[i]=[Target_Transfer_Functions[i].x];
+            Transfer_Functions[i] = [Reference_Transfer_Functions[i].y,Target_Transfer_Functions[i].y,Reference_to_Target_Transfer_Functions[i].y]
+        }
+
+        const Target_Max_Strain_Profile_Array        = [];
+        const Reference_Max_Strain_Profile_Array     = [];
+        const Target_Max_Strain_Profile              = this.state.Max_Strain_Profile[1]["data"]
+        const Reference_Max_Strain_Profile           = this.state.Max_Strain_Profile[0]["data"]
+        
+        n = Target_Max_Strain_Profile.length;
+        for (let i = 0; i < n; i++){
+            Target_Max_Strain_Profile_Array[i]=[Target_Max_Strain_Profile[i].y,Target_Max_Strain_Profile[i].x];
+        }
+
+        n = Reference_Max_Strain_Profile.length;
+        for (let i = 0; i < n; i++){
+            Reference_Max_Strain_Profile_Array[i]=[Reference_Max_Strain_Profile[i].y,Reference_Max_Strain_Profile[i].x];
+        }
+
+        //######################################################################################
+        //######################################################################################
+        // create a sheet for motion_analysis 
+        var ws = XLSX.utils.json_to_sheet(this.state.Motion);
+
+        /* merge cells A1:C1 */
+        var merge = { s: {r:0, c:0}, e: {r:0, c:2} };
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(merge);
+
+        XLSX.utils.sheet_add_aoa(ws, [["Recordings (g)"]], {origin: "A1"});
+        XLSX.utils.sheet_add_aoa(ws, [["Time (s)","Reference site","Target site"]], {origin: "A2"});
+        XLSX.utils.sheet_add_aoa(ws, time, {origin: "A3"});
+        XLSX.utils.sheet_add_aoa(ws, recording, {origin: "B3"});
+
+        /* merge cells D1:F1 */
+        var merge = { s: {r:0, c:4}, e: {r:0, c:6} };
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(merge);
+
+        XLSX.utils.sheet_add_aoa(ws, [["Frequency smplitude spectrum (g-s)"]], {origin: "E1"});
+        XLSX.utils.sheet_add_aoa(ws, [["Frequency (Hz)","Reference site","Target site"]], {origin: "E2"});
+        XLSX.utils.sheet_add_aoa(ws, freq, {origin: "E3"});
+        XLSX.utils.sheet_add_aoa(ws, FAS_Spectrum, {origin: "F3"});
+
+        /* merge cells H1:J1 */
+        var merge = { s: {r:0, c:8}, e: {r:0, c:10} };
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(merge);
+
+        XLSX.utils.sheet_add_aoa(ws, [["Pseudo spectral acceleration (g)"]], {origin: "I1"});
+        XLSX.utils.sheet_add_aoa(ws, [["Frequency (Hz)","Reference site","Target site"]], {origin: "I2"});
+        XLSX.utils.sheet_add_aoa(ws, freq2, {origin: "I3"});
+        XLSX.utils.sheet_add_aoa(ws, PSA_Spectrum, {origin: "J3"});
+
+        XLSX.utils.book_append_sheet(wb,ws,"Motion_Analysis");
+
+        //######################################################################################
+        //######################################################################################
+        // create a sheet for transfer functions
+        var ws = XLSX.utils.json_to_sheet(this.state.Motion);
+
+        /* merge cells A1:D1 */
+        var merge = { s: {r:0, c:0}, e: {r:0, c:3} };
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(merge);
+
+        XLSX.utils.sheet_add_aoa(ws, [["Transfer functions (g-s)"]], {origin: "A1"});
+        XLSX.utils.sheet_add_aoa(ws, [["Frequency (Hz)","Reference site: bedrock to surface","Target site: bedrock to surface", "Reference site's surface to target site's surface"]], {origin: "A2"});
+        XLSX.utils.sheet_add_aoa(ws, freq3, {origin: "A3"});
+        XLSX.utils.sheet_add_aoa(ws, Transfer_Functions, {origin: "B3"});
+
+        /* merge cells E1:G1 */
+        var merge = { s: {r:0, c:5}, e: {r:0, c:8} };
+        if(!ws['!merges']) ws['!merges'] = [];
+        ws['!merges'].push(merge);
+
+        XLSX.utils.sheet_add_aoa(ws, [["Maximum shear strain profile (%)"]], {origin: "F1"});
+        XLSX.utils.sheet_add_aoa(ws, [["Depth (m)","Reference site", "Depth (m)", "Target site"]], {origin: "F2"});
+        XLSX.utils.sheet_add_aoa(ws, Reference_Max_Strain_Profile_Array, {origin: "F3"});
+        XLSX.utils.sheet_add_aoa(ws, Target_Max_Strain_Profile_Array, {origin: "H3"});
+
+        // ws = XLSX.utils.json_to_sheet(this.state.Transfer_Functions);
+        XLSX.utils.book_append_sheet(wb,ws,"Site_Response_Analysis");
+
+        XLSX.writeFile(wb,"Results.xlsx");
     }
 
     //////////////////////////////////////////////////////////////////
