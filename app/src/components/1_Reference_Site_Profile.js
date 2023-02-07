@@ -167,7 +167,7 @@ class Reference_Site extends Component{
                                     <Col xs={2}><Form.Control type="text" name = "Ref_Water_Table_Depth" defaultValue={this.props.inputValues.Ref_Water_Table_Depth} required onChange={this.props.handleChange}/></Col>
                                 </Form.Group>
                                 <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }}>
-                                  <Col xs={2}><Form.Label> <h6> 3) Halfsapce: </h6> </Form.Label></Col>
+                                  <Col xs={2}><Form.Label> <h6> 3) Halfspace: </h6> </Form.Label></Col>
                                   <Col xs={2}><CustomTooltip title="Halfspace shear wave velocity" placement="bottom" ><Form.Label> V<sub>S</sub> (m/s) </Form.Label></CustomTooltip></Col>
                                   <Col xs={2}><Form.Control type="text" name = "Ref_Halfspace_Vs" defaultValue={this.props.inputValues.Ref_Halfspace_Vs} required onChange={this.props.handleChange}/></Col>
                                   <Col xs={2}><CustomTooltip title="Halfspace damping" placement="bottom" ><Form.Label>Damping (%) </Form.Label></CustomTooltip></Col>

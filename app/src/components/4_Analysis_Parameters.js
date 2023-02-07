@@ -77,8 +77,8 @@ class Analysis_Settings extends Component{
                     <Col sm={{ span: 4, offset: 0 }}><CustomTooltip title="Set Site Reponse Analysis Calculation Method" placement="right" ><Form.Label> <h6>1) Analysis type: </h6></Form.Label></CustomTooltip></Col>
                     <Col sm={{ span: 4, offset: 0 }}>
                             <Form.Control as="select" name= "Analysis_Type" defaultValue={this.props.inputValues.Analysis_Type} required onChange={this.props.handleChange}>
-                            <option value="LE">Linear elastic</option>
                             <option value="EQL">Equivalent linear</option>
+                            {/*<option value="LE">Linear elastic</option>*/}
                           </Form.Control>                      
                     </Col>
                   </Form.Group>

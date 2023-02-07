@@ -40,7 +40,7 @@ class Application extends Component {
             Site_Damping_Profile: [{"id": "Reference site","color": "hsl(120, 100%, 20%)", "data": [{"x":0.02, "y":0},{"x":0.02, "y":15},{"x":0.01, "y":15},{"x":0.01, "y":20}]},{"id": "Target site","color": "hsl(16, 88%, 54%)","data": [{"x":0.02, "y":0},{"x":0.02, "y":10},{"x":0.01, "y":10},{"x":0.01, "y":20}]},{"id": "Target depth","color":"hsl(0, 100%, 0%)","data": [{"x":0, "y":5},{"x":0.02, "y":5}]}], // Reference Vs Profile
 
             // Analysis Parameters
-            Analysis_Type: 'LE', // type of analysis
+            Analysis_Type: 'EQL', // type of analysis
             Tol: 0.01,           // error tolerance (%)
             MaxIter: 15,         // maximum number of iterations
             EffStrain: 0.65,     // effective strain ratio
