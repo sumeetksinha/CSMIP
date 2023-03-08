@@ -76,7 +76,7 @@ function App() {
 
         <hr/>
 
-        <font size="2">  
+        {/*<font size="2">  */}
 
           <h5>Acknowledgements</h5>
 
@@ -98,7 +98,7 @@ function App() {
             <li>Pretell R., Ziotopoulou K., and Abrahamson N. (2019). <i> Methodology for the development of input motions for nonlinear deformation analyses</i>. In Proceedings of 7<sup>th</sup> International Conference on Earthquake Geotechnical Engineering (ICEGE), Rome, Italy. (<a target="_blank" href="https://www.issmge.org/uploads/publications/59/104/ch507.pdf">pdf</a>) </li>
             </ul>
 
-        </font>
+        {/*</font>*/}
         
     </div>
   );
