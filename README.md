@@ -1,4 +1,4 @@
-[CSMIP](https://csmip.herokuapp.com//)
+[CSMIP](http://generateinputgroundmotions.apps.iitd.ac.in/)
 =========
 
 ### Description
@@ -9,12 +9,12 @@ CSMIP is a web application for the development of input ground motions for nonli
 
 <!-- ### Manual 
 
-Below are the list of user interface and what they offer
+Below is the list of user interfaces and what they offer
 
-1) Projects : Select a project from projects list
-2) Baseline : Relect the time with respect to which data is processed 
-3) Data : Select the time of data to be enquired
-4) Update : Update the plots to the latest live data  -->
+1) Projects: Select a project from the projects list
+2) Baseline: Relect the time concerning which data is processed 
+3) Data: Select the time of data to be enquired
+4) Update: Update the plots to the latest live data  -->
 
 ---
 Created by: [Sumeet Kumar Sinha](http://www.sumeetksinha.com), [Renmin Pretell](https://www.linkedin.com/in/rpretelld/), and [Katerina Ziotopoulou](https://cee.engineering.ucdavis.edu/directory/katerina-ziotopoulou)
