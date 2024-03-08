@@ -5,7 +5,7 @@
 
 CSMIP is a web application for the development of input ground motions for nonlinear deformation analyses following the double convolution approach. The application is expected to facilitate and increase the use of ground motion seismic recordings by practitioners.
 
-[<img src="./app/App.png">](https://csmip.herokuapp.com/)
+[<img src="./app/App.png">](http://generateinputgroundmotions.apps.iitd.ac.in/)
 
 <!-- ### Manual 
 
