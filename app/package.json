@@ -18,7 +18,7 @@
     "fs": "^0.0.1-security",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.25",
-    "material-table": "^1.63.0",
+    "material-table": "^1.69.3",
     "python-shell": "^3.0.1",
     "react": ">=16.8.4",
     "react-bootstrap": "^1.6.5",
