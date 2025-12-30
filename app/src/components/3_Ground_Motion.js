@@ -72,13 +72,14 @@ class Ground_Motion extends Component{
                     <Form inline>
                         <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
                             <Col xs={13}><Form.Label> <h6> &nbsp;&nbsp; 2) Frequency amplitude spectrum 
-                            &nbsp;&nbsp; {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="grow" size="sm" animation="border"/> Generate</Button>) : 
+                            &nbsp;&nbsp; {whether_analyzed ? (<Button variant="primary"  onClick={this.props.Generate_FAS} ><Spinner as="span" animation="border" size="sm"/> Generate</Button>) : 
                                         (<Button variant="primary" onClick={this.props.Generate_FAS} >Generate</Button>) }</h6></Form.Label>
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
-                            <Col xs={4}><Form.Label> <h6><font color="red"> &nbsp;&nbsp;&nbsp;&nbsp; OR </font> </h6> </Form.Label></Col>
-                            <Col xs={8}><Form.Control  type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile}/></Col>
+                            <Col xs={3}><Form.Label> <h6><font color="red"> &nbsp;&nbsp;&nbsp;&nbsp; OR </font> </h6> </Form.Label></Col>
+                            <Col xs={6}><Form.Control  type="file" name ="FASFile" accept=".txt" onChange={this.props.handleFile}/></Col>
+                            <Col xs={3}><Button variant="outline-primary" size="sm" onClick={this.props.downloadSampleFAS} style={{marginLeft: "5px", whiteSpace: "nowrap"}}>Download Sample</Button></Col>
                         </Form.Group>
                     </Form>
                     <p></p> 
