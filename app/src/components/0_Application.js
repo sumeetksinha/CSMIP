@@ -281,22 +281,44 @@ class Application extends Component {
         let file_content =""
 
         reader.onload = function(event) {  
-            const file_data_array =  reader.result.split(/\r?\n/);
-            const FAS_Data = this.state.FAS
+            try {
+                const file_data_array =  reader.result.split(/\r?\n/);
+                const FAS_Data = this.state.FAS
 
-            let n = file_data_array.length;
-            var FAS_Data_Array  = [];
-            var FAS_Data_Points = {};
+                let n = file_data_array.length;
+                var FAS_Data_Array  = [];
+                var FAS_Data_Points = {};
 
-            for (let i = 0; i < n; i++){
-                let data = file_data_array[i].split(",");
-                FAS_Data_Points.y = data[1];
-                FAS_Data_Points.x = data[0];
-                FAS_Data_Array.push({...FAS_Data_Points});
+                for (let i = 0; i < n; i++){
+                    // Trim whitespace and skip empty lines
+                    const line = file_data_array[i].trim();
+                    if (!line) continue;
+                    
+                    let data = line.split(",");
+                    // Validate that we have both x and y values
+                    if (data.length >= 2 && data[0] && data[1]) {
+                        const x = parseFloat(data[0].trim());
+                        const y = parseFloat(data[1].trim());
+                        // Check if values are valid numbers
+                        if (!isNaN(x) && !isNaN(y)) {
+                            FAS_Data_Points.y = y;
+                            FAS_Data_Points.x = x;
+                            FAS_Data_Array.push({...FAS_Data_Points});
+                        }
+                    }
+                }
+
+                // Only update if we have valid data
+                if (FAS_Data_Array.length > 0) {
+                    FAS_Data[0].data = FAS_Data_Array;
+                    this.setState({FAS:FAS_Data});
+                } else {
+                    alert("Error: No valid data found in the file. Please check the file format. Expected format: frequency,amplitude (one pair per line).");
+                }
+            } catch (error) {
+                console.error("Error parsing FAS file:", error);
+                alert("Error reading FAS file. Please ensure the file format is correct: frequency,amplitude (one pair per line).");
             }
-
-            FAS_Data[0].data = FAS_Data_Array;
-            this.setState({FAS:FAS_Data});
 
         }.bind(this);
 
@@ -320,26 +342,61 @@ class Application extends Component {
         let file_content =""
 
         reader.onload = function(event) {  
-            const file_data_array =  reader.result.split(/\r?\n/);
-            const Motion_Data     = this.state.Motion
+            try {
+                const file_data_array =  reader.result.split(/\r?\n/);
+                const Motion_Data     = this.state.Motion
 
-            let n = file_data_array.length;
-            var Motion_Data_Array  = [];
-            var Motion_Data_Points = {};
-            var dt = file_data_array[0].split(",")[0];
+                // Validate first line for dt (time step)
+                const firstLine = file_data_array[0] ? file_data_array[0].trim() : "";
+                if (!firstLine) {
+                    alert("Error: File is empty or invalid. Expected format: first line should contain time step (dt).");
+                    return;
+                }
 
-            for (let i = 1; i < n; i++){
-                let data = file_data_array[i].split(",");
-                if (data==""){ continue}
-                Motion_Data_Points.y = data[0];
-                Motion_Data_Points.x = (i-1)*dt;
-                Motion_Data_Array.push({...Motion_Data_Points});
+                const dtValue = firstLine.split(",")[0];
+                const dt = parseFloat(dtValue.trim());
+                
+                if (isNaN(dt) || dt <= 0) {
+                    alert("Error: Invalid time step (dt) in first line. Expected a positive number.");
+                    return;
+                }
+
+                let n = file_data_array.length;
+                var Motion_Data_Array  = [];
+                var Motion_Data_Points = {};
+
+                for (let i = 1; i < n; i++){
+                    // Trim whitespace and skip empty lines
+                    const line = file_data_array[i].trim();
+                    if (!line) continue;
+                    
+                    let data = line.split(",");
+                    // Motion file format: each line is a single acceleration value (or comma-separated with value first)
+                    const accelerationValue = data[0] ? data[0].trim() : "";
+                    
+                    if (accelerationValue) {
+                        const y = parseFloat(accelerationValue);
+                        // Check if value is a valid number
+                        if (!isNaN(y)) {
+                            Motion_Data_Points.y = y;
+                            Motion_Data_Points.x = (Motion_Data_Array.length) * dt;
+                            Motion_Data_Array.push({...Motion_Data_Points});
+                        }
+                    }
+                }
+
+                // Only update if we have valid data
+                if (Motion_Data_Array.length > 0) {
+                    Motion_Data[1].data = Motion_Data_Array;
+                    this.setState({Motion:Motion_Data});
+                    this.Generate_Motion();
+                } else {
+                    alert("Error: No valid motion data found in the file. Please check the file format. Expected format: first line is time step (dt), subsequent lines are acceleration values (one per line).");
+                }
+            } catch (error) {
+                console.error("Error parsing Motion file:", error);
+                alert("Error reading Motion file. Please ensure the file format is correct: first line should be time step (dt), subsequent lines should be acceleration values (one per line).");
             }
-
-            Motion_Data[1].data = Motion_Data_Array;
-            this.setState({Motion:Motion_Data});
-
-            this.Generate_Motion();
 
         }.bind(this);
 
@@ -456,6 +513,46 @@ class Application extends Component {
         XLSX.utils.book_append_sheet(wb,ws,"Target");
 
         XLSX.writeFile(wb,"SoilProfile.xlsx");
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Download sample FAS file
+    //////////////////////////////////////////////////////////////////
+    downloadSampleFAS = () => {
+        fetch('/sample_fas.txt')
+            .then(response => response.text())
+            .then(data => {
+                const blob = new Blob([data], { type: "text/plain" });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = "sample_fas.txt";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.log(error));
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // Download sample Motion file
+    //////////////////////////////////////////////////////////////////
+    downloadSampleMotion = () => {
+        fetch('/sample_motion.txt')
+            .then(response => response.text())
+            .then(data => {
+                const blob = new Blob([data], { type: "text/plain" });
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = "sample_motion.txt";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.log(error));
     }
 
     //////////////////////////////////////////////////////////////////
@@ -823,6 +920,7 @@ class Application extends Component {
                     handleChange = {this.handleChange}
                     inputValues={inputValues}
                     Generate_FAS={this.Generate_FAS}
+                    downloadSampleFAS={this.downloadSampleFAS}
                     />
         case 4:
             return <Tab_4
@@ -839,6 +937,7 @@ class Application extends Component {
                 handleChange = {this.handleChange}
                 handleFile = {this.readMotionFile}
                 downloadFile = {this.downloadInputMotionFile}
+                downloadSampleMotion={this.downloadSampleMotion}
                 />
         }
     }
