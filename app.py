@@ -315,8 +315,8 @@ def Analyze():
     # max Shear Strain Profile
     ###########################################################################
 
-    Reference_Strain = np.array(outputs_reference[1].values[:-1],dtype=np.float)
-    Target_Strain    = np.array(outputs_target[1].values[:-1],dtype=np.float) 
+    Reference_Strain = np.array(outputs_reference[1].values[:-1],dtype=float)
+    Target_Strain    = np.array(outputs_target[1].values[:-1],dtype=float) 
 
     # print(Reference_Strain)
     # print(Target_Strain)
@@ -517,5 +517,6 @@ def serve():
 
 if __name__ == '__main__':
     # app.jinja_env.auto_reload = True
-    # app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run()
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    # app.run(host='10.17.7.231')
+    app.run(host="127.0.0.1")
