@@ -125,7 +125,8 @@ class Results extends Component{
                                     </Form.Group>
                                     <Form.Group as={Row} controlId="Date" style={{ display:"flex", flexDirection:"row", alignItems:"center",  }} >
                                         <Col xs={3}><Form.Label> <h6><font color="red"> &nbsp;&nbsp;&nbsp;&nbsp;  OR </font> </h6> </Form.Label></Col>
-                                        <Col xs={8}><Form.Control type="file" name ="Motion_File" accept=".txt" onChange={this.props.handleFile}/></Col>
+                                        <Col xs={5}><Form.Control type="file" name ="Motion_File" accept=".txt" onChange={this.props.handleFile}/></Col>
+                                        <Col xs={4}><Button variant="outline-primary" size="sm" onClick={this.props.downloadSampleMotion} style={{marginLeft: "10px"}}>Download Sample</Button></Col>
                                     </Form.Group>
                                 </Form>
 
